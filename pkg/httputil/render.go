@@ -28,12 +28,8 @@ type Created struct {
 	ID string `json:"id" bson:"_id"`
 }
 
-func SuccessCreatedResponse(w http.ResponseWriter, id *string) {
-	writeJSON(w, http.StatusCreated, &Created{ID: *id})
-}
-
-func SuccessEntityCreatedResponse(w http.ResponseWriter, data any) {
-	writeJSON(w, http.StatusCreated, data)
+func SuccessCreatedResponse(w http.ResponseWriter, id string) {
+	writeJSON(w, http.StatusCreated, &Created{id})
 }
 
 func ErrorResponse(w http.ResponseWriter, err error) {

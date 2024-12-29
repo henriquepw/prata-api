@@ -11,11 +11,10 @@ import (
 )
 
 type Config struct {
-	TZ           string `validate:"required,uppercase"`
-	Port         string `validate:"required,numeric"`
-	JWTSecret    string `validate:"required"`
-	DatabaseURL  string `validate:"required"`
-	DatabaseName string `validate:"required"`
+	TZ          string `validate:"required,uppercase"`
+	Port        string `validate:"required,numeric"`
+	JWTSecret   string `validate:"required"`
+	DatabaseURL string `validate:"required"`
 }
 
 var config *Config
@@ -36,11 +35,10 @@ func init() {
 // Load carrega as configurações da variável de ambiente
 func Load() {
 	config = &Config{
-		TZ:           os.Getenv("TZ"),
-		Port:         os.Getenv("PORT"),
-		JWTSecret:    os.Getenv("JWT_SECRET"),
-		DatabaseURL:  os.Getenv("DATABASE_URL"),
-		DatabaseName: os.Getenv("DATABASE_NAME"),
+		TZ:          os.Getenv("TZ"),
+		Port:        os.Getenv("PORT"),
+		JWTSecret:   os.Getenv("JWT_SECRET"),
+		DatabaseURL: os.Getenv("DATABASE_URL"),
 	}
 
 	if config.Port == "" {

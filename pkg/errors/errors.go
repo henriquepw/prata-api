@@ -17,7 +17,7 @@ func (s ServerError) Error() string {
 }
 
 func BadRequest(message ...string) ServerError {
-	msg := "Requisição inválida"
+	msg := "Bad Request"
 	if message != nil {
 		msg = strings.Join(message, "")
 	}
@@ -29,7 +29,7 @@ func BadRequest(message ...string) ServerError {
 }
 
 func NotFound(message ...string) ServerError {
-	msg := "Dado não encontrado"
+	msg := "Not found"
 	if message != nil {
 		msg = strings.Join(message, "")
 	}
@@ -42,13 +42,13 @@ func NotFound(message ...string) ServerError {
 
 func Unauthorized() ServerError {
 	return ServerError{
-		Message:    "Não Autorizado",
+		Message:    "Unauthorized",
 		StatusCode: http.StatusUnauthorized,
 	}
 }
 
 func Conflict(message ...string) ServerError {
-	msg := "Conflito"
+	msg := "Conflict"
 	if message != nil {
 		msg = strings.Join(message, "")
 	}
@@ -61,14 +61,14 @@ func Conflict(message ...string) ServerError {
 
 func InvalidRequestData(errors map[string]string) ServerError {
 	return ServerError{
-		Message:    "Erro de validação",
+		Message:    "Validation error",
 		Errors:     errors,
 		StatusCode: http.StatusUnprocessableEntity,
 	}
 }
 
 func Internal(msgs ...string) ServerError {
-	message := "Error Interno"
+	message := "Internal error"
 	if msgs != nil {
 		message = strings.Join(msgs, "; ")
 	}
@@ -80,7 +80,7 @@ func Internal(msgs ...string) ServerError {
 }
 
 func InvalidJSON(msgs ...string) ServerError {
-	message := "Dado mal formatado"
+	message := "Invalid data format"
 	if msgs != nil {
 		message = strings.Join(msgs, "; ")
 	}
@@ -93,19 +93,7 @@ func InvalidJSON(msgs ...string) ServerError {
 
 func MethodNotAllowed() ServerError {
 	return ServerError{
-		Message:    "Método inválido",
+		Message:    "Method not allowed",
 		StatusCode: http.StatusMethodNotAllowed,
-	}
-}
-
-func UnprocessableEntity(message ...string) ServerError {
-	msg := "Requisição não pode ser processada"
-	if message != nil {
-		msg = strings.Join(message, "")
-	}
-
-	return ServerError{
-		Message:    msg,
-		StatusCode: http.StatusUnprocessableEntity,
 	}
 }

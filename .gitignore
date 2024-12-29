@@ -11,3 +11,4 @@ fly.toml
 !.env.test
 .vscode
 .idea
+local.db

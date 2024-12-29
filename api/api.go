@@ -6,17 +6,20 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
+	"github.com/henriquepw/pobrin-api/api/income"
 	"github.com/henriquepw/pobrin-api/pkg/config"
 	"github.com/henriquepw/pobrin-api/pkg/errors"
 	"github.com/henriquepw/pobrin-api/pkg/httputil"
+	"github.com/jmoiron/sqlx"
 )
 
 type apiServer struct {
+	db   *sqlx.DB
 	addr string
 }
 
-func NewApiServer() *apiServer {
-	return &apiServer{":" + config.Env().Port}
+func NewApiServer(db *sqlx.DB) *apiServer {
+	return &apiServer{db, ":" + config.Env().Port}
 }
 
 func (s *apiServer) Start() error {
@@ -42,6 +45,23 @@ func (s *apiServer) Start() error {
 
 	r.MethodNotAllowed(func(w http.ResponseWriter, r *http.Request) {
 		httputil.ErrorResponse(w, errors.MethodNotAllowed())
+	})
+
+	incomeStore := income.NewIncomeStore(s.db)
+	incomeSvc := income.NewIncomeService(incomeStore)
+	incomeHandler := income.NewIncomeHandler(incomeSvc)
+
+	// Private Routes
+	r.Group(func(r chi.Router) {
+		// add auth middleware
+
+		r.Route("/incomes", func(r chi.Router) {
+			r.Post("/", incomeHandler.PostIncome)
+			r.Get("/", incomeHandler.GetIncomeList)
+			r.Get("/{incomeId}", incomeHandler.GetIncomeByID)
+			r.Patch("/{incomeId}", incomeHandler.PatchIncomeByID)
+			r.Delete("/{incomeId}", incomeHandler.DeleteIncomeByID)
+		})
 	})
 
 	return http.ListenAndServe(s.addr, r)

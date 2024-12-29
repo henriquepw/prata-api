@@ -16,16 +16,16 @@ type jobServer struct {
 	running   map[string]struct{}
 }
 
-func NewJobServer() (*jobServer, error) {
+func NewJobServer() *jobServer {
 	s, err := gocron.NewScheduler()
 	if err != nil {
-		return nil, err
+		log.Fatal(err.Error())
 	}
 
 	return &jobServer{
 		scheduler: s,
 		running:   map[string]struct{}{},
-	}, nil
+	}
 }
 
 func (s *jobServer) runTask(cron, name string, task func()) error {
