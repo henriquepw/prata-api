@@ -1,0 +1,13 @@
+.gitlab-ci-local
+.tmp/
+.build/
+run-app
+
+.DS_Store
+fly.toml
+
+.env*
+!.env.example
+!.env.test
+.vscode
+.idea
