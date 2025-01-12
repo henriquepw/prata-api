@@ -1,0 +1,97 @@
+name: Run tests and update coverage
+
+on:
+  pull_request:
+    branches:
+      - main
+      - staging
+
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: write # This is required for actions/checkout
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GOPRIVATE: github.com/oitheia
+      AWS_REGION: us-east-1
+    name: Update coverage badge
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
+          fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1.7.0
+        with:
+          role-to-assume: arn:aws:iam::673991670544:role/ci-integration-tests
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: './go.mod'
+
+      - name: Add SSH Go Module Private Key
+        env:
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+          ssh-add - <<< "${{ secrets.GO_MODULE_PRIVATE_KEY }}"
+          echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK" >> $GITHUB_ENV
+
+      - name: Setup access for private Go modules
+        run: |
+          git config --global url."ssh://git@github.com/".insteadOf https://github.com/
+
+      - name: Cache Go modules
+        uses: actions/cache@v4
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+    
+      - name: Docker Login
+        run: aws ecr get-login-password | docker login --username AWS --password-stdin 673991670544.dkr.ecr.us-east-1.amazonaws.com
+      
+      - name: Run Tests
+        run: |
+          go test ./... -covermode=count -coverprofile=coverage.out
+
+      - name: Generate Coverage Report
+        run: |
+          go tool cover -func=coverage.out -o=coverage.out
+
+      - name: Update Coverage Badge
+        uses: tj-actions/coverage-badge-go@v2
+        with:
+          filename: coverage.out
+
+      - name: Verify Changed Files
+        uses: tj-actions/verify-changed-files@v12
+        id: verify-changed-files
+        with:
+          files: README.md
+
+      - name: Commit Changes
+        if: steps.verify-changed-files.outputs.files_changed == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add README.md
+          git commit -m "chore: Updated coverage badge."
+
+      - name: Push Changes
+        if: steps.verify-changed-files.outputs.files_changed == 'true'
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.head_ref }}
+
