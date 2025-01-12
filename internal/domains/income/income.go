@@ -1,9 +1,13 @@
 package income
 
-import "time"
+import (
+	"time"
+
+	"github.com/henriquepw/pobrin-api/pkg/apid"
+)
 
 type Income struct {
-	ID         string    `json:"id" db:"id"`
+	ID         apid.ID   `json:"id" db:"id"`
 	Amount     int       `json:"amount" db:"amount"`
 	ReceivedAt time.Time `json:"receivedAt" db:"received_at"`
 	CreatedAt  time.Time `json:"createdAt" db:"created_at"`
