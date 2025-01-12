@@ -3,10 +3,13 @@ package id
 import (
 	"database/sql/driver"
 	"encoding/json"
-	"errors"
-	"fmt"
 
+	serverError "github.com/henriquepw/pobrin-api/pkg/errors"
 	"github.com/nrednav/cuid2"
+)
+
+var (
+	ErrInvalidID = serverError.ServerError{Message: "invalid format id"}
 )
 
 type ID string
@@ -39,7 +42,7 @@ func (id *ID) UnmarshalJSON(b []byte) error {
 
 	ok := cuid2.IsCuid(s)
 	if !ok {
-		return errors.New("invalid cu!")
+		return ErrInvalidID
 	}
 
 	*id = ID(s)
@@ -52,7 +55,7 @@ func (id ID) MarshalJSON() ([]byte, error) {
 
 	ok := cuid2.IsCuid(string(id))
 	if !ok {
-		return nil, errors.New("invalid cu!")
+		return nil, ErrInvalidID
 	}
 
 	s = string(id)
@@ -79,7 +82,7 @@ func (id *ID) Scan(value any) error {
 	case ID:
 		*id = v
 	default:
-		return fmt.Errorf("cannot scan type %T into ID", value)
+		return ErrInvalidID
 	}
 
 	return nil
