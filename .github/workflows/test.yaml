@@ -14,8 +14,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      GOPRIVATE: github.com/oitheia
-      AWS_REGION: us-east-1
+      ENV: test
     name: Update coverage badge
     steps:
       - name: Checkout
@@ -36,10 +35,7 @@ jobs:
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
-    
-      - name: Docker Login
-        run: aws ecr get-login-password | docker login --username AWS --password-stdin 673991670544.dkr.ecr.us-east-1.amazonaws.com
-      
+
       - name: Run Tests
         run: |
           go test ./... -covermode=count -coverprofile=coverage.out
