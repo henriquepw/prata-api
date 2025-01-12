@@ -2,9 +2,9 @@ package job
 
 import (
 	"log"
+	"log/slog"
 
 	"github.com/go-co-op/gocron/v2"
-	"golang.org/x/exp/slog"
 )
 
 const (
