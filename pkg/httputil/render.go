@@ -25,7 +25,7 @@ func SuccessResponse(w http.ResponseWriter, data ...any) {
 }
 
 type Created struct {
-	ID string `json:"id" bson:"_id"`
+	ID string `json:"id"`
 }
 
 func SuccessCreatedResponse(w http.ResponseWriter, id string) {

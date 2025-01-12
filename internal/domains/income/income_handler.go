@@ -27,7 +27,7 @@ func (h *incomeHandler) PostIncome(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	httputil.SuccessCreatedResponse(w, income.ID)
+	httputil.SuccessCreatedResponse(w, income.ID.String())
 }
 
 func (h *incomeHandler) PatchIncomeByID(w http.ResponseWriter, r *http.Request) {
