@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/henriquepw/pobrin-api/pkg/apid"
 	"github.com/henriquepw/pobrin-api/pkg/errors"
+	"github.com/henriquepw/pobrin-api/pkg/id"
 	"github.com/henriquepw/pobrin-api/pkg/page"
 	"github.com/henriquepw/pobrin-api/pkg/validate"
 )
@@ -33,7 +33,7 @@ func (s *incomeService) CreateIncome(ctx context.Context, dto IncomeCreate) (*In
 
 	now := time.Now()
 	income := Income{
-		ID:         apid.New(),
+		ID:         id.New(),
 		Amount:     dto.Amount,
 		ReceivedAt: dto.ReceivedAt,
 		CreatedAt:  now,
