@@ -1,7 +1,8 @@
-package api
+package job
 
 import (
 	"log"
+	"log/slog"
 
 	"github.com/go-co-op/gocron/v2"
 )
@@ -16,16 +17,16 @@ type jobServer struct {
 	running   map[string]struct{}
 }
 
-func NewJobServer() *jobServer {
+func NewServer() (*jobServer, error) {
 	s, err := gocron.NewScheduler()
 	if err != nil {
-		log.Fatal(err.Error())
+		return nil, err
 	}
 
 	return &jobServer{
 		scheduler: s,
 		running:   map[string]struct{}{},
-	}
+	}, nil
 }
 
 func (s *jobServer) runTask(cron, name string, task func()) error {
@@ -40,7 +41,7 @@ func (s *jobServer) runTask(cron, name string, task func()) error {
 		delete(s.running, name)
 	}), gocron.WithName(name))
 	if err != nil {
-		log.Printf("Can't start '%s' job\n", name)
+		slog.Error("can't start job", "name", name)
 	}
 
 	return err
