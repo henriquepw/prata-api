@@ -18,7 +18,7 @@ type apiServer struct {
 	addr string
 }
 
-func NewApiServer(db *sqlx.DB) *apiServer {
+func New(db *sqlx.DB) *apiServer {
 	return &apiServer{db, ":" + config.Env().Port}
 }
 

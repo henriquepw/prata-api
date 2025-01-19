@@ -12,26 +12,17 @@ func main() {
 	db, err := database.GetDBConnection(database.MainMigration)
 	if err != nil {
 		slog.Error("failed to initialize database", "error", err)
-
 		return
 	}
-
 	defer db.Close()
 
-	jobServer, err := job.NewServer()
-	if err != nil {
-		slog.Error("failed to initialize job server", "error", err)
-
-		return
-	}
-
+	jobServer := job.New()
 	if err := jobServer.Start(); err != nil {
 		slog.Error("failed to start job server", "error", err)
-
 		return
 	}
 
-	apiServer := api.NewApiServer(db)
+	apiServer := api.New(db)
 	if err := apiServer.Start(); err != nil {
 		slog.Error("failed to initialize api server", "error", err)
 

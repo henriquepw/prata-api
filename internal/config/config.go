@@ -29,11 +29,10 @@ func init() {
 	}
 
 	godotenv.Load(filepath.Join(rootDir, env))
-	Load()
+	load()
 }
 
-// Load carrega as configurações da variável de ambiente
-func Load() {
+func load() {
 	config = &Config{
 		TZ:          os.Getenv("TZ"),
 		Port:        os.Getenv("PORT"),
@@ -51,10 +50,9 @@ func Load() {
 	}
 }
 
-// Env retorna a configuração
 func Env() *Config {
 	if config == nil {
-		Load()
+		load()
 	}
 
 	return config
