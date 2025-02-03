@@ -3,6 +3,7 @@ package user_test
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"testing"
 	"time"
 
@@ -83,9 +84,9 @@ func TestStore(t *testing.T) {
 		db := testutil.GetDB(database.UserMigration, InsertUser(createdUser))
 		userStore := user.NewUserStore(db)
 
-		foundUser, err := userStore.Get(ctx, createdUser.ID)
-		assert.Nil(t, err)
-		assert.Nil(t, foundUser)
+		_, err := userStore.Get(ctx, createdUser.ID)
+		assert.NotNil(t, err)
+		assert.True(t, errors.Is(err, user.UserNotFound))
 	})
 
 	t.Run("Delete user", func(t *testing.T) {
