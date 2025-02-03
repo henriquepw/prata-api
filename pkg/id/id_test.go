@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/henriquepw/pobrin-api/pkg/id"
-	"github.com/henriquepw/pobrin-api/pkg/testutil"
+	"github.com/henriquepw/pobrin-api/pkg/testutil/assert"
 )
 
 func TestIDMarshaling(t *testing.T) {
@@ -17,10 +17,10 @@ func TestIDMarshaling(t *testing.T) {
 	id := id.New()
 	x := map[string]any{"id": id, "name": "Jose"}
 	xBytes, err := json.Marshal(x)
-	testutil.NilError(t, err)
+	assert.Nil(t, err)
 	testStruct := TestStruct{}
 	err = json.Unmarshal(xBytes, &testStruct)
-	testutil.NilError(t, err)
+	assert.Nil(t, err)
 }
 
 func TestIDScanValue(t *testing.T) {
@@ -28,38 +28,53 @@ func TestIDScanValue(t *testing.T) {
 		var id id.ID
 
 		err := id.Scan(nil)
-		testutil.NilError(t, err)
-		testutil.Equal(t, "", id)
+		assert.Nil(t, err)
+		assert.Equal(t, "", id)
 	})
 
 	t.Run("valid id", func(t *testing.T) {
 		var testID id.ID
 		expectedID := id.New()
 		err := testID.Scan(expectedID)
-		testutil.NilError(t, err)
-		testutil.Equal(t, expectedID, testID)
+		assert.Nil(t, err)
+		assert.Equal(t, expectedID, testID)
 	})
 
 	t.Run("valid string id", func(t *testing.T) {
 		var testID id.ID
 		expectedID := id.New()
 		err := testID.Scan(string(expectedID))
-		testutil.NilError(t, err)
-		testutil.Equal(t, expectedID, testID)
+		assert.Nil(t, err)
+		assert.Equal(t, expectedID, testID)
 	})
 
 	t.Run("valid byte id", func(t *testing.T) {
 		var testID id.ID
 		expectedID := id.New()
 		err := testID.Scan([]byte(expectedID))
-		testutil.NilError(t, err)
-		testutil.Equal(t, expectedID, testID)
+		assert.Nil(t, err)
+		assert.Equal(t, expectedID, testID)
 	})
 
 	t.Run("invalid type id", func(t *testing.T) {
 		var testID id.ID
 
 		err := testID.Scan(123)
-		testutil.NotNilError(t, err)
+		assert.NotNil(t, err)
 	})
+}
+
+func TestParseAndValidate(t *testing.T) {
+	t.Run("Valid ID", func(t *testing.T) {
+		id, err := id.Parse("ABC")
+		assert.Nil(t, err)
+		assert.NotEmptyString(t, id)
+	})
+
+	t.Run("Invalid ID", func(t *testing.T) {
+		id, err := id.Parse("1w")
+		assert.Nil(t, err)
+		assert.NotEmptyString(t, id)
+	})
+
 }
