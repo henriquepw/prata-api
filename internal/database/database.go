@@ -11,6 +11,26 @@ import (
 
 type Migration func(*sqlx.DB) error
 
+func UserMigration(db *sqlx.DB) error {
+	schema := `
+    CREATE TABLE IF NOT EXISTS users (
+      id TEXT PRIMARY KEY,
+      created_at DATETIME NOT NULL,
+      updated_at DATETIME NOT NULL,
+	  deleted_at DATETIME NULL,
+	  last_login DATETIME NULL,
+      name TEXT NOT NULL,
+      username TEXT NOT NULL,
+      email TEXT NOT NULL,
+      password TEXT NOT NULL
+    )
+  `
+
+	_, err := db.Exec(schema)
+
+	return err
+}
+
 func MainMigration(db *sqlx.DB) error {
 	schema := `
     CREATE TABLE IF NOT EXISTS income (
