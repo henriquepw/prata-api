@@ -12,8 +12,6 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-var UserNotFound = errors.New("user not found")
-
 type Store interface {
 	Insert(ctx context.Context, i User) error
 	Delete(ctx context.Context, id id.ID) error
