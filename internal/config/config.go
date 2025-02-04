@@ -23,6 +23,10 @@ var (
 )
 
 func init() {
+	if os.Getenv("ENV") == "test" {
+		return
+	}
+
 	_, currentFile, _, _ := runtime.Caller(0)
 	rootDir := filepath.Join(filepath.Dir(currentFile), "../..")
 
