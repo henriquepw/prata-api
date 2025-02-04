@@ -14,23 +14,24 @@ import (
 
 var UserNotFound = errors.New("user not found")
 
-type IncomeStore interface {
+type Store interface {
 	Insert(ctx context.Context, i User) error
 	Delete(ctx context.Context, id id.ID) error
 	Update(ctx context.Context, id id.ID, i User) error
 	Get(ctx context.Context, id id.ID) (*User, error)
 	List(ctx context.Context, q User) (*page.Cursor[User], error)
+	GetUserPassword(ctx context.Context, username string) (string, error)
 }
 
-type UserStore struct {
+type store struct {
 	db *sqlx.DB
 }
 
-func NewUserStore(db *sqlx.DB) *UserStore {
-	return &UserStore{db: db}
+func NewUserStore(db *sqlx.DB) *store {
+	return &store{db: db}
 }
 
-func (store *UserStore) Insert(ctx context.Context, user *User) error {
+func (store *store) Insert(ctx context.Context, user *User) error {
 	q := `
 	insert into users 
 	(id,  name,  username,  email,  password,  created_at,  updated_at)
@@ -46,12 +47,12 @@ func (store *UserStore) Insert(ctx context.Context, user *User) error {
 	return nil
 }
 
-func (store *UserStore) Delete(ctx context.Context, id id.ID) error {
+func (store *store) Delete(ctx context.Context, id id.ID) error {
 	_, err := store.db.ExecContext(ctx, "UPDATE users SET deleted_at = ? WHERE id = ?", time.Now(), id)
 	return err
 }
 
-func (store *UserStore) Update(ctx context.Context, id id.ID, user *User) error {
+func (store *store) Update(ctx context.Context, id id.ID, user *User) error {
 	q := `
     UPDATE users
     SET name = ?, username = ?, email = ?, password = ?, updated_at = ?
@@ -65,7 +66,7 @@ func (store *UserStore) Update(ctx context.Context, id id.ID, user *User) error 
 	return err
 }
 
-func (store *UserStore) Get(ctx context.Context, id id.ID) (*User, error) {
+func (store *store) Get(ctx context.Context, id id.ID) (*User, error) {
 	query := "SELECT * FROM users WHERE id = ? and deleted_at is null"
 
 	var user User
@@ -81,7 +82,7 @@ func (store *UserStore) Get(ctx context.Context, id id.ID) (*User, error) {
 	return &user, nil
 }
 
-func (store *UserStore) GetUserPassword(ctx context.Context, username string) (string, error) {
+func (store *store) GetUserPassword(ctx context.Context, username string) (string, error) {
 	query := "SELECT password FROM users WHERE username = ? and deleted_at is null"
 
 	var password string
