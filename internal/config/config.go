@@ -1,10 +1,10 @@
 package config
 
 import (
-	"log"
 	"os"
 	"path/filepath"
 	"runtime"
+	"sync"
 
 	"github.com/henriquepw/pobrin-api/pkg/validate"
 	"github.com/joho/godotenv"
@@ -17,9 +17,16 @@ type Config struct {
 	DatabaseURL string `validate:"required"`
 }
 
-var config *Config
+var (
+	config      *Config
+	configMutex = &sync.Mutex{}
+)
 
 func init() {
+	if os.Getenv("ENV") == "test" {
+		return
+	}
+
 	_, currentFile, _, _ := runtime.Caller(0)
 	rootDir := filepath.Join(filepath.Dir(currentFile), "../..")
 
@@ -46,13 +53,18 @@ func load() {
 
 	err := validate.Check(config)
 	if err != nil {
-		log.Panic(err)
+		panic(err)
 	}
 }
 
 func Env() *Config {
 	if config == nil {
-		load()
+		configMutex.Lock()
+		defer configMutex.Unlock()
+
+		if config == nil {
+			load()
+		}
 	}
 
 	return config

@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/henriquepw/pobrin-api/pkg/httputil"
+	"github.com/henriquepw/pobrin-api/pkg/id"
 )
 
 type incomeHandler struct {
@@ -31,13 +32,18 @@ func (h *incomeHandler) PostIncome(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *incomeHandler) PatchIncomeByID(w http.ResponseWriter, r *http.Request) {
+	id, err := id.Parse(r.PathValue("incomeId"))
+	if err != nil {
+		return
+	}
+
 	body, err := httputil.GetBodyRequest[IncomeUpdate](r)
 	if err != nil {
 		httputil.ErrorResponse(w, err)
 		return
 	}
 
-	err = h.svc.UpdateIncome(r.Context(), r.PathValue("incomeId"), body)
+	err = h.svc.UpdateIncome(r.Context(), id, body)
 	if err != nil {
 		httputil.ErrorResponse(w, err)
 		return
@@ -47,7 +53,12 @@ func (h *incomeHandler) PatchIncomeByID(w http.ResponseWriter, r *http.Request) 
 }
 
 func (h *incomeHandler) GetIncomeByID(w http.ResponseWriter, r *http.Request) {
-	income, err := h.svc.GetIncome(r.Context(), r.PathValue("incomeId"))
+	id, err := id.Parse(r.PathValue("incomeId"))
+	if err != nil {
+		return
+	}
+
+	income, err := h.svc.GetIncome(r.Context(), id)
 	if err != nil {
 		httputil.ErrorResponse(w, err)
 		return
@@ -69,7 +80,12 @@ func (h *incomeHandler) GetIncomeList(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *incomeHandler) DeleteIncomeByID(w http.ResponseWriter, r *http.Request) {
-	err := h.svc.DeleteIncome(r.Context(), r.PathValue("incomeId"))
+	id, err := id.Parse(r.PathValue("incomeId"))
+	if err != nil {
+		return
+	}
+
+	err = h.svc.DeleteIncome(r.Context(), id)
 	if err != nil {
 		httputil.ErrorResponse(w, err)
 		return
