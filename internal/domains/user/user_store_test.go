@@ -86,7 +86,7 @@ func TestStore(t *testing.T) {
 
 		_, err := userStore.Get(ctx, createdUser.ID)
 		assert.NotNil(t, err)
-		assert.True(t, errors.Is(err, user.UserNotFound))
+		assert.True(t, errors.As(err, &user.UserNotFound))
 	})
 
 	t.Run("Delete user", func(t *testing.T) {
