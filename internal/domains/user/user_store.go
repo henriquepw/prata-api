@@ -71,7 +71,7 @@ func (store *store) Get(ctx context.Context, id id.ID) (*User, error) {
 	err := store.db.GetContext(ctx, &user, query, id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, UserNotFound
+			return nil, ErrUserNotFound
 		}
 
 		return nil, err
@@ -87,7 +87,7 @@ func (store *store) GetUserPassword(ctx context.Context, username string) (strin
 	err := store.db.GetContext(ctx, &password, query, username)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return password, UserNotFound
+			return nil, ErrUserNotFound
 		}
 
 		return password, err
