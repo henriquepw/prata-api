@@ -8,16 +8,15 @@ import (
 	"time"
 
 	"github.com/henriquepw/pobrin-api/pkg/id"
-	"github.com/henriquepw/pobrin-api/pkg/page"
 	"github.com/jmoiron/sqlx"
 )
 
 type Store interface {
-	Insert(ctx context.Context, i User) error
+	Insert(ctx context.Context, data *User) error
 	Delete(ctx context.Context, id id.ID) error
-	Update(ctx context.Context, id id.ID, i User) error
+	Update(ctx context.Context, id id.ID, data *User) error
 	Get(ctx context.Context, id id.ID) (*User, error)
-	List(ctx context.Context, q User) (*page.Cursor[User], error)
+	// List(ctx context.Context, q User) (*page.Cursor[User], error) // ToDo: to add later
 	GetUserPassword(ctx context.Context, username string) (string, error)
 }
 
