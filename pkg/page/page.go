@@ -13,7 +13,11 @@ func NewEmpty[T any]() *Cursor[T] {
 }
 
 func New[T any](items []T, limit int, next func(item T) string) *Cursor[T] {
-	if len(items) > limit {
+	if items == nil {
+		items = []T{}
+	}
+
+	if limit > 0 && len(items) > limit {
 		cursor := next(items[limit])
 		return &Cursor[T]{
 			Items: items[:limit],
