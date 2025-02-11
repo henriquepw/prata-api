@@ -12,9 +12,9 @@ import (
 
 type IncomeService interface {
 	CreateIncome(ctx context.Context, dto IncomeCreate) (*Income, error)
-	UpdateIncome(ctx context.Context, id string, dto IncomeUpdate) error
-	DeleteIncome(ctx context.Context, id string) error
-	GetIncome(ctx context.Context, id string) (*Income, error)
+	UpdateIncome(ctx context.Context, id id.ID, dto IncomeUpdate) error
+	DeleteIncome(ctx context.Context, id id.ID) error
+	GetIncome(ctx context.Context, id id.ID) (*Income, error)
 	ListIncome(ctx context.Context, dto IncomeQuery) *page.Cursor[Income]
 }
 
@@ -48,7 +48,7 @@ func (s *incomeService) CreateIncome(ctx context.Context, dto IncomeCreate) (*In
 	return &income, nil
 }
 
-func (s *incomeService) UpdateIncome(ctx context.Context, id string, dto IncomeUpdate) error {
+func (s *incomeService) UpdateIncome(ctx context.Context, id id.ID, dto IncomeUpdate) error {
 	if err := validate.Check(dto); err != nil {
 		return err
 	}
@@ -56,7 +56,7 @@ func (s *incomeService) UpdateIncome(ctx context.Context, id string, dto IncomeU
 	return nil
 }
 
-func (s *incomeService) DeleteIncome(ctx context.Context, id string) error {
+func (s *incomeService) DeleteIncome(ctx context.Context, id id.ID) error {
 	err := s.store.Delete(ctx, id)
 	if err != nil {
 		return errors.Internal("Failed to delete the income")
@@ -65,7 +65,7 @@ func (s *incomeService) DeleteIncome(ctx context.Context, id string) error {
 	return nil
 }
 
-func (s *incomeService) GetIncome(ctx context.Context, id string) (*Income, error) {
+func (s *incomeService) GetIncome(ctx context.Context, id id.ID) (*Income, error) {
 	income, err := s.store.Get(ctx, id)
 	if err != nil {
 		return nil, errors.NotFound("Income not found")

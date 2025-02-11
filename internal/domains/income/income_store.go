@@ -5,15 +5,16 @@ import (
 	"time"
 
 	"github.com/henriquepw/pobrin-api/pkg/date"
+	"github.com/henriquepw/pobrin-api/pkg/id"
 	"github.com/henriquepw/pobrin-api/pkg/page"
 	"github.com/jmoiron/sqlx"
 )
 
 type IncomeStore interface {
 	Insert(ctx context.Context, i Income) error
-	Delete(ctx context.Context, id string) error
-	Update(ctx context.Context, id string, i IncomeUpdate) error
-	Get(ctx context.Context, id string) (*Income, error)
+	Delete(ctx context.Context, id id.ID) error
+	Update(ctx context.Context, id id.ID, i IncomeUpdate) error
+	Get(ctx context.Context, id id.ID) (*Income, error)
 	List(ctx context.Context, q IncomeQuery) (*page.Cursor[Income], error)
 }
 
@@ -30,23 +31,23 @@ func (s *incomeStore) Insert(ctx context.Context, i Income) error {
     INSERT INTO Income (id, amount, received_at, created_at, updated_at)
     VALUES (:id, :amount, :received_at, :created_at, :updated_at)
   `
-	_, error := s.db.NamedExecContext(ctx, query, i)
+	_, err := s.db.NamedExecContext(ctx, query, i)
 
-	return error
+	return err
 }
 
-func (s *incomeStore) Delete(ctx context.Context, id string) error {
+func (s *incomeStore) Delete(ctx context.Context, id id.ID) error {
 	_, err := s.db.ExecContext(ctx, "DELETE FROM income WHERE id = ?", id)
 	return err
 }
 
-func (s *incomeStore) Update(ctx context.Context, id string, i IncomeUpdate) error {
+func (s *incomeStore) Update(ctx context.Context, id id.ID, i IncomeUpdate) error {
 	query := `
     UPDATE income
     SET amount = ?, received_at = ?, updated_at = ?
     WHERE id = ?
   `
-	_, error := s.db.ExecContext(
+	_, err := s.db.ExecContext(
 		ctx, query,
 		i.Amount,
 		date.FormatToISO(i.ReceivedAt),
@@ -54,10 +55,10 @@ func (s *incomeStore) Update(ctx context.Context, id string, i IncomeUpdate) err
 		id,
 	)
 
-	return error
+	return err
 }
 
-func (s *incomeStore) Get(ctx context.Context, id string) (*Income, error) {
+func (s *incomeStore) Get(ctx context.Context, id id.ID) (*Income, error) {
 	query := `
     SELECT id, amount, received_at, created_at, updated_at
     FROM Income

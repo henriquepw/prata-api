@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 
 	serverError "github.com/henriquepw/pobrin-api/pkg/errors"
-	"github.com/nrednav/cuid2"
+	cuid "github.com/nrednav/cuid2"
 )
 
 var (
@@ -13,6 +13,22 @@ var (
 )
 
 type ID string
+
+func Parse(s string) (ID, error) {
+	if IsValid(s) {
+		return "", ErrInvalidID
+	}
+
+	return ID(s), nil
+}
+
+func IsValid[T string | ID](id T) bool {
+	if id == "" {
+		return false
+	}
+
+	return cuid.IsCuid(string(id))
+}
 
 func New() ID {
 	return createID(24)
@@ -23,9 +39,9 @@ func NewTiny() ID {
 }
 
 func createID(size int) ID {
-	generate, err := cuid2.Init(
-		cuid2.WithLength(size),
-		cuid2.WithFingerprint("pobrin-api"),
+	generate, err := cuid.Init(
+		cuid.WithLength(size),
+		cuid.WithFingerprint("pobrin-api"),
 	)
 	if err != nil {
 		panic(err)
@@ -40,7 +56,7 @@ func (id *ID) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
-	ok := cuid2.IsCuid(s)
+	ok := IsValid(s)
 	if !ok {
 		return ErrInvalidID
 	}
@@ -53,7 +69,7 @@ func (id *ID) UnmarshalJSON(b []byte) error {
 func (id ID) MarshalJSON() ([]byte, error) {
 	var s string
 
-	ok := cuid2.IsCuid(string(id))
+	ok := IsValid(string(id))
 	if !ok {
 		return nil, ErrInvalidID
 	}
