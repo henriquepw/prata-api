@@ -2,9 +2,10 @@ package database
 
 import (
 	"log"
+	"os"
 	"sync"
 
-	"github.com/henriquepw/pobrin-api/internal/config"
+	"github.com/henriquepw/pobrin-api/internal/env"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/tursodatabase/go-libsql"
 )
@@ -33,7 +34,7 @@ func GetDBConnection(m ...Migration) (*sqlx.DB, error) {
 }
 
 func startDB(migrations ...Migration) (*sqlx.DB, error) {
-	db, err := sqlx.Open("libsql", config.Env().DatabaseURL)
+	db, err := sqlx.Open("libsql", os.Getenv(env.DatabaseURL))
 	if err != nil {
 		log.Fatalf("failed to open db: %s", err.Error())
 

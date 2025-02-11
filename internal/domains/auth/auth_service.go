@@ -3,11 +3,12 @@ package auth
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/henriquepw/pobrin-api/internal/config"
 	"github.com/henriquepw/pobrin-api/internal/domains/auth/jwtutils"
 	"github.com/henriquepw/pobrin-api/internal/domains/user"
+	"github.com/henriquepw/pobrin-api/internal/env"
 	"github.com/henriquepw/pobrin-api/pkg/hash"
 )
 
@@ -34,13 +35,13 @@ func (svc *service) Login(ctx context.Context, data *LoginRequest) (*LoginRespon
 	}
 
 	access := jwt.NewWithClaims(jwt.SigningMethodHS256, jwtutils.NewClaims(user.ID, "access"))
-	a, err := access.SignedString([]byte(config.Env().JWTSecret))
+	a, err := access.SignedString([]byte(os.Getenv(env.JWTSecret)))
 	if err != nil {
 		return nil, err
 	}
 
 	refresh := jwt.NewWithClaims(jwt.SigningMethodHS256, jwtutils.NewClaims(user.ID, "refresh"))
-	r, err := refresh.SignedString([]byte(config.Env().JWTSecret))
+	r, err := refresh.SignedString([]byte(os.Getenv(env.JWTSecret)))
 	if err != nil {
 		return nil, err
 	}
