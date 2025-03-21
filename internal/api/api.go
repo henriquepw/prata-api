@@ -2,12 +2,13 @@ package api
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
-	"github.com/henriquepw/pobrin-api/internal/config"
 	"github.com/henriquepw/pobrin-api/internal/domains/income"
+	"github.com/henriquepw/pobrin-api/internal/env"
 	"github.com/henriquepw/pobrin-api/pkg/errors"
 	"github.com/henriquepw/pobrin-api/pkg/httputil"
 	"github.com/jmoiron/sqlx"
@@ -19,7 +20,7 @@ type apiServer struct {
 }
 
 func New(db *sqlx.DB) *apiServer {
-	return &apiServer{db, ":" + config.Env().Port}
+	return &apiServer{db, ":" + os.Getenv(env.Port)}
 }
 
 func (s *apiServer) Start() error {

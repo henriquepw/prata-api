@@ -8,17 +8,16 @@ import (
 	"time"
 
 	"github.com/henriquepw/pobrin-api/pkg/id"
-	"github.com/henriquepw/pobrin-api/pkg/page"
 	"github.com/jmoiron/sqlx"
 )
 
 type Store interface {
-	Insert(ctx context.Context, i User) error
+	Insert(ctx context.Context, data *User) error
 	Delete(ctx context.Context, id id.ID) error
-	Update(ctx context.Context, id id.ID, i User) error
+	Update(ctx context.Context, id id.ID, data *User) error
 	Get(ctx context.Context, id id.ID) (*User, error)
-	List(ctx context.Context, q User) (*page.Cursor[User], error)
-	GetUserPassword(ctx context.Context, username string) (string, error)
+	// List(ctx context.Context, q User) (*page.Cursor[User], error) // ToDo: to add later
+	GetUserPassword(ctx context.Context, username string) (*User, error)
 }
 
 type store struct {
@@ -71,7 +70,7 @@ func (store *store) Get(ctx context.Context, id id.ID) (*User, error) {
 	err := store.db.GetContext(ctx, &user, query, id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, UserNotFound
+			return nil, ErrUserNotFound
 		}
 
 		return nil, err
@@ -80,18 +79,18 @@ func (store *store) Get(ctx context.Context, id id.ID) (*User, error) {
 	return &user, nil
 }
 
-func (store *store) GetUserPassword(ctx context.Context, username string) (string, error) {
-	query := "SELECT password FROM users WHERE username = ? and deleted_at is null"
+func (store *store) GetUserPassword(ctx context.Context, username string) (*User, error) {
+	query := "SELECT id, password FROM users WHERE username = ? and deleted_at is null"
 
-	var password string
-	err := store.db.GetContext(ctx, &password, query, username)
+	var user User
+	err := store.db.GetContext(ctx, &user, query, username)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return password, UserNotFound
+			return nil, ErrUserNotFound
 		}
 
-		return password, err
+		return nil, err
 	}
 
-	return password, nil
+	return &user, nil
 }

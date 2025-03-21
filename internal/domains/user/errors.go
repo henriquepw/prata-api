@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	UserNotFound = apiError.ServerError{
+	ErrUserNotFound = apiError.ServerError{
 		Errors:     map[string]string{"Not Found": "user not found"},
 		Message:    "could not found user in database, verify if request data is correct",
 		StatusCode: http.StatusNotFound,

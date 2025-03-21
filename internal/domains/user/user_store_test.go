@@ -65,9 +65,9 @@ func TestStore(t *testing.T) {
 		db := testutil.GetDB(database.UserMigration, InsertUser(createdUser))
 		userStore := user.NewUserStore(db)
 
-		password, err := userStore.GetUserPassword(ctx, createdUser.Username)
+		user, err := userStore.GetUserPassword(ctx, createdUser.Username)
 		assert.Nil(t, err)
-		assert.True(t, hash.Validate(password, "secure"))
+		assert.True(t, hash.Validate(user.Password, "secure"))
 	})
 
 	t.Run("Get user password", func(t *testing.T) {
@@ -86,7 +86,7 @@ func TestStore(t *testing.T) {
 
 		_, err := userStore.Get(ctx, createdUser.ID)
 		assert.NotNil(t, err)
-		assert.True(t, errors.As(err, &user.UserNotFound))
+		assert.True(t, errors.As(err, &user.ErrUserNotFound))
 	})
 
 	t.Run("Delete user", func(t *testing.T) {
