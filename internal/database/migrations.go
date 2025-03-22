@@ -28,7 +28,7 @@ func UserMigration(db *sqlx.DB) error {
 
 func RecurrenceMigration(db *sqlx.DB) error {
 	schema := `
-    CREATE TABLE IF NOT EXISTS recurrence (
+    CREATE TABLE IF NOT EXISTS recurrences (
       id TEXT PRIMARY KEY,
       description TEXT NOT NULL,
       frequence TEXT NOT NULL,
@@ -45,9 +45,9 @@ func RecurrenceMigration(db *sqlx.DB) error {
 	return err
 }
 
-func IncomeMigration(db *sqlx.DB) error {
+func TransactionMigration(db *sqlx.DB) error {
 	schema := `
-    CREATE TABLE IF NOT EXISTS income (
+    CREATE TABLE IF NOT EXISTS transactions (
       id TEXT PRIMARY KEY,
       amount INTEGER NOT NULL,
       received_at DATETIME NOT NULL,

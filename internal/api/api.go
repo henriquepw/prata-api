@@ -8,8 +8,8 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
-	"github.com/henriquepw/pobrin-api/internal/domains/income"
 	"github.com/henriquepw/pobrin-api/internal/domains/recurrence"
+	"github.com/henriquepw/pobrin-api/internal/domains/transaction"
 	"github.com/henriquepw/pobrin-api/internal/env"
 	"github.com/henriquepw/pobrin-api/pkg/errors"
 	"github.com/henriquepw/pobrin-api/pkg/httputil"
@@ -50,22 +50,11 @@ func (s *apiServer) Start() error {
 		httputil.ErrorResponse(w, errors.MethodNotAllowed())
 	})
 
-	incomeStore := income.NewIncomeStore(s.db)
-	incomeSvc := income.NewIncomeService(incomeStore)
-	incomeHandler := income.NewIncomeHandler(incomeSvc)
-
 	// Private Routes
 	r.Group(func(r chi.Router) {
 		// add auth middleware
 
-		r.Route("/incomes", func(r chi.Router) {
-			r.Post("/", incomeHandler.PostIncome)
-			r.Get("/", incomeHandler.GetIncomeList)
-			r.Get("/{incomeId}", incomeHandler.GetIncomeByID)
-			r.Patch("/{incomeId}", incomeHandler.PatchIncomeByID)
-			r.Delete("/{incomeId}", incomeHandler.DeleteIncomeByID)
-		})
-
+		r.Route("/transactions", transaction.NewRouter(s.db))
 		r.Route("/recurrences", recurrence.NewRouter(s.db))
 	})
 

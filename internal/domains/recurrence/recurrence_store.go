@@ -27,17 +27,16 @@ func NewStore(db *sqlx.DB) RecurrenceStore {
 
 func (s *recurrenceStore) Insert(ctx context.Context, i Recurrence) error {
 	query := `
-    INSERT INTO recurrence (id, description, frequence, installments, start_at, end_at, created_at, updated_at)
+    INSERT INTO recurrences (id, description, frequence, installments, start_at, end_at, created_at, updated_at)
     VALUES (:id, :description, :frequence, :installments, :start_at, :end_at, :created_at, :updated_at)
   `
 
 	_, err := s.db.NamedExecContext(ctx, query, i)
-
 	return err
 }
 
 func (s *recurrenceStore) Delete(ctx context.Context, id id.ID) error {
-	_, err := s.db.ExecContext(ctx, "DELETE FROM recurrence WHERE id = ?", id)
+	_, err := s.db.ExecContext(ctx, "DELETE FROM recurrences WHERE id = ?", id)
 	return err
 }
 
@@ -60,11 +59,7 @@ func (s *recurrenceStore) Update(ctx context.Context, id id.ID, i RecurrenceUpda
 }
 
 func (s *recurrenceStore) Get(ctx context.Context, id id.ID) (*Recurrence, error) {
-	query := `
-    SELECT id, description, frequence, installments, start_at, end_at, created_at, updated_at, deleted_at
-    FROM recurrence
-    WHERE id = ?
-  `
+	query := `SELECT * FROM recurrences WHERE id = ?`
 
 	var recurrence Recurrence
 	err := s.db.GetContext(ctx, &recurrence, query, id)
@@ -77,8 +72,8 @@ func (s *recurrenceStore) Get(ctx context.Context, id id.ID) (*Recurrence, error
 
 func (s *recurrenceStore) List(ctx context.Context, q RecurrenceQuery) (*page.Cursor[Recurrence], error) {
 	query := `
-    SELECT id, description, frequence, installments, start_at, end_at, created_at, updated_at, deleted_at
-    FROM recurrence
+    SELECT *
+    FROM recurrences
     WHERE created_at > ?
     ORDER BY created_at ASC
     LIMIT ?
