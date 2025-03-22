@@ -43,7 +43,6 @@ func GetValidate() *validator.Validate {
 
 		validate.RegisterValidation("custom", CustomValidation)
 
-		validate.RegisterAlias("id", "custom")
 		validate.RegisterAlias("cnpj", "numeric,len=14")
 		validate.RegisterAlias("cpf", "numeric,len=11")
 		validate.RegisterAlias("phone", "numeric,len=11")

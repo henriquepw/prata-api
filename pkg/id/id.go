@@ -12,20 +12,16 @@ var ErrInvalidID = serverError.ServerError{Message: "invalid format id"}
 
 type ID string
 
+func isValid[T string | ID](id T) bool {
+	return cuid.IsCuid(string(id))
+}
+
 func Parse(s string) (ID, error) {
-	if IsValid(s) {
+	if isValid(s) {
 		return "", ErrInvalidID
 	}
 
 	return ID(s), nil
-}
-
-func IsValid[T string | ID](id T) bool {
-	return cuid.IsCuid(string(id))
-}
-
-func (id ID) Validate() bool {
-	return IsValid(id)
 }
 
 func (id *ID) UnmarshalJSON(b []byte) error {
@@ -34,27 +30,20 @@ func (id *ID) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
-	ok := IsValid(s)
-	if !ok {
+	if isValid(s) {
 		return ErrInvalidID
 	}
 
 	*id = ID(s)
-
 	return nil
 }
 
 func (id ID) MarshalJSON() ([]byte, error) {
-	var s string
-
-	ok := IsValid(string(id))
-	if !ok {
+	if isValid(string(id)) {
 		return nil, ErrInvalidID
 	}
 
-	s = string(id)
-
-	return json.Marshal(s)
+	return json.Marshal(string(id))
 }
 
 func (id ID) String() string {
@@ -64,7 +53,6 @@ func (id ID) String() string {
 func (id *ID) Scan(value any) error {
 	if value == nil {
 		*id = ""
-
 		return nil
 	}
 
@@ -90,7 +78,7 @@ func (id ID) Value() (driver.Value, error) {
 	return string(id), nil
 }
 
-func createID(size int) ID {
+func mustCreateID(size int) ID {
 	generate, err := cuid.Init(
 		cuid.WithLength(size),
 		cuid.WithFingerprint("pobrin-api"),
@@ -103,9 +91,9 @@ func createID(size int) ID {
 }
 
 func New() ID {
-	return createID(24)
+	return mustCreateID(24)
 }
 
 func NewTiny() ID {
-	return createID(6)
+	return mustCreateID(6)
 }

@@ -35,7 +35,7 @@ type Transaction struct {
 }
 
 type TransactionCreate struct {
-	AccountID   id.ID           `json:"accountId" validate:"required,id"`
+	AccountID   id.ID           `json:"accountId" validate:"required"`
 	Tags        []string        `json:"tags" validate:"required"`
 	Type        TransactionType `json:"type" validate:"required,custom"`
 	Description string          `json:"description" validate:"required"`

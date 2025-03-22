@@ -34,6 +34,7 @@ func (s *recurrenceService) CreateRecurrence(ctx context.Context, dto Recurrence
 	now := time.Now()
 	recurrence := Recurrence{
 		ID:           id.New(),
+		AccountID:    dto.AccountID,
 		Description:  dto.Description,
 		Frequence:    dto.Frequence,
 		Installments: dto.Installments,

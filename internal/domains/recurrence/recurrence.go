@@ -8,6 +8,7 @@ import (
 
 type Recurrence struct {
 	ID           id.ID      `json:"id" db:"id"`
+	AccountID    id.ID      `json:"accountId" db:"account_id"`
 	Description  string     `json:"description" db:"description"`
 	Frequence    Frequence  `json:"frequence" db:"frequence"`
 	Installments uint       `json:"installments" db:"installments"`
@@ -19,6 +20,7 @@ type Recurrence struct {
 }
 
 type RecurrenceCreate struct {
+	AccountID    id.ID      `json:"accountId" validate:"required"`
 	Description  string     `json:"description" validate:"required"`
 	Frequence    Frequence  `json:"frequence" validate:"required,custom"`
 	Installments uint       `json:"installments" validate:"required,min=1"`

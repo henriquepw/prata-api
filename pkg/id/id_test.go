@@ -76,5 +76,4 @@ func TestParseAndValidate(t *testing.T) {
 		assert.Nil(t, err)
 		assert.NotEmptyString(t, id)
 	})
-
 }
