@@ -10,9 +10,38 @@ import (
 
 var validate *validator.Validate
 
+type Validatable interface {
+	Validate() bool
+}
+
+func CustomValidation(fl validator.FieldLevel) bool {
+	field := fl.Field()
+
+	if field.Kind() == reflect.Ptr {
+		if field.IsNil() {
+			return false
+		}
+		field = field.Elem()
+	}
+
+	validatableType := reflect.TypeOf((*Validatable)(nil)).Elem()
+	if !field.Type().Implements(validatableType) {
+		return false
+	}
+
+	f, ok := field.Interface().(Validatable)
+	if !ok {
+		return false
+	}
+
+	return f.Validate()
+}
+
 func GetValidate() *validator.Validate {
 	if validate == nil {
 		validate = validator.New(validator.WithRequiredStructEnabled())
+
+		validate.RegisterValidation("custom", CustomValidation)
 
 		validate.RegisterAlias("cnpj", "numeric,len=14")
 		validate.RegisterAlias("cpf", "numeric,len=11")
