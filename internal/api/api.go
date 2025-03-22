@@ -8,6 +8,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 	"github.com/henriquepw/pobrin-api/internal/domains/income"
+	"github.com/henriquepw/pobrin-api/internal/domains/recurrence"
 	"github.com/henriquepw/pobrin-api/internal/env"
 	"github.com/henriquepw/pobrin-api/pkg/errors"
 	"github.com/henriquepw/pobrin-api/pkg/httputil"
@@ -36,7 +37,7 @@ func (s *apiServer) Start() error {
 			AllowCredentials: true,
 			MaxAge:           300,
 		}),
-		middleware.AllowContentType("application/json", "application/x-www-form-urlencoded", "multipart/form-data"),
+		middleware.AllowContentType("application/json"),
 		middleware.Heartbeat("/health"),
 	)
 
@@ -63,6 +64,8 @@ func (s *apiServer) Start() error {
 			r.Patch("/{incomeId}", incomeHandler.PatchIncomeByID)
 			r.Delete("/{incomeId}", incomeHandler.DeleteIncomeByID)
 		})
+
+		r.Route("/recurrence", recurrence.NewRouter())
 	})
 
 	return http.ListenAndServe(s.addr, r)
