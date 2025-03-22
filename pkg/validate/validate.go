@@ -43,12 +43,10 @@ func GetValidate() *validator.Validate {
 
 		validate.RegisterValidation("custom", CustomValidation)
 
+		validate.RegisterAlias("id", "custom")
 		validate.RegisterAlias("cnpj", "numeric,len=14")
 		validate.RegisterAlias("cpf", "numeric,len=11")
 		validate.RegisterAlias("phone", "numeric,len=11")
-		validate.RegisterAlias("id", "uppercase,alphanum")
-		validate.RegisterAlias("profile", "eq=TEST|eq=DEVELOPMENT|eq=STAGING|eq=PRODUCTION")
-		validate.RegisterAlias("logFormat", "eq=DEFAULT|eq=JSON")
 
 		validate.RegisterTagNameFunc(func(fld reflect.StructField) string {
 			name := strings.SplitN(fld.Tag.Get("json"), ",", 2)[0]

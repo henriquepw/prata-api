@@ -24,6 +24,10 @@ func IsValid[T string | ID](id T) bool {
 	return cuid.IsCuid(string(id))
 }
 
+func (id ID) Validate() bool {
+	return IsValid(id)
+}
+
 func (id *ID) UnmarshalJSON(b []byte) error {
 	var s string
 	if err := json.Unmarshal(b, &s); err != nil {
