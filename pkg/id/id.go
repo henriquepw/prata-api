@@ -8,9 +8,7 @@ import (
 	cuid "github.com/nrednav/cuid2"
 )
 
-var (
-	ErrInvalidID = serverError.ServerError{Message: "invalid format id"}
-)
+var ErrInvalidID = serverError.ServerError{Message: "invalid format id"}
 
 type ID string
 
@@ -23,31 +21,7 @@ func Parse(s string) (ID, error) {
 }
 
 func IsValid[T string | ID](id T) bool {
-	if id == "" {
-		return false
-	}
-
 	return cuid.IsCuid(string(id))
-}
-
-func New() ID {
-	return createID(24)
-}
-
-func NewTiny() ID {
-	return createID(6)
-}
-
-func createID(size int) ID {
-	generate, err := cuid.Init(
-		cuid.WithLength(size),
-		cuid.WithFingerprint("pobrin-api"),
-	)
-	if err != nil {
-		panic(err)
-	}
-
-	return ID(generate())
 }
 
 func (id *ID) UnmarshalJSON(b []byte) error {
@@ -110,4 +84,24 @@ func (id ID) Value() (driver.Value, error) {
 	}
 
 	return string(id), nil
+}
+
+func createID(size int) ID {
+	generate, err := cuid.Init(
+		cuid.WithLength(size),
+		cuid.WithFingerprint("pobrin-api"),
+	)
+	if err != nil {
+		panic(err)
+	}
+
+	return ID(generate())
+}
+
+func New() ID {
+	return createID(24)
+}
+
+func NewTiny() ID {
+	return createID(6)
 }

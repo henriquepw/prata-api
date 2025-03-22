@@ -15,13 +15,16 @@ var (
 	dbMutex = &sync.Mutex{}
 )
 
-func GetDBConnection(m ...Migration) (*sqlx.DB, error) {
+func GetDB() (*sqlx.DB, error) {
 	if dbConn == nil {
 		dbMutex.Lock()
 		defer dbMutex.Unlock()
 
 		if dbConn == nil {
-			db, err := startDB(m...)
+			db, err := startDB(
+				IncomeMigration,
+				RecurrenceMigration,
+			)
 			if err != nil {
 				return nil, err
 			}

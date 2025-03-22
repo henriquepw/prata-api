@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 
@@ -65,8 +66,9 @@ func (s *apiServer) Start() error {
 			r.Delete("/{incomeId}", incomeHandler.DeleteIncomeByID)
 		})
 
-		r.Route("/recurrence", recurrence.NewRouter())
+		r.Route("/recurrences", recurrence.NewRouter(s.db))
 	})
 
+	fmt.Println("Server running on port ", s.addr)
 	return http.ListenAndServe(s.addr, r)
 }

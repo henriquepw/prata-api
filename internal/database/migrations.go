@@ -13,8 +13,8 @@ func UserMigration(db *sqlx.DB) error {
       id TEXT PRIMARY KEY,
       created_at DATETIME NOT NULL,
       updated_at DATETIME NOT NULL,
-	  deleted_at DATETIME NULL,
-	  last_login DATETIME NULL,
+	    deleted_at DATETIME NULL,
+	    last_login DATETIME NULL,
       name TEXT NOT NULL,
       username TEXT NOT NULL,
       email TEXT NOT NULL,
@@ -23,11 +23,29 @@ func UserMigration(db *sqlx.DB) error {
   `
 
 	_, err := db.Exec(schema)
-
 	return err
 }
 
-func MainMigration(db *sqlx.DB) error {
+func RecurrenceMigration(db *sqlx.DB) error {
+	schema := `
+    CREATE TABLE IF NOT EXISTS recurrence (
+      id TEXT PRIMARY KEY,
+      description TEXT NOT NULL,
+      frequence TEXT NOT NULL,
+      installments INTEGER NOT NULL,
+      start_at DATETIME NOT NULL,
+      end_at DATETIME,
+      created_at DATETIME NOT NULL,
+      updated_at DATETIME NOT NULL,
+      deleted_at DATETIME
+    );
+  `
+
+	_, err := db.Exec(schema)
+	return err
+}
+
+func IncomeMigration(db *sqlx.DB) error {
 	schema := `
     CREATE TABLE IF NOT EXISTS income (
       id TEXT PRIMARY KEY,
@@ -35,18 +53,17 @@ func MainMigration(db *sqlx.DB) error {
       received_at DATETIME NOT NULL,
       created_at DATETIME NOT NULL,
       updated_at DATETIME NOT NULL
-    )
+    );
   `
 
 	_, err := db.Exec(schema)
-
 	return err
 }
 
 func InsertUser(createdUser *user.User) func(db *sqlx.DB) error {
 	return func(db *sqlx.DB) error {
 		_, err := db.NamedExec(`
-	insert into users 
+	insert into users
 	(id,  name,  username,  email,  password,  created_at,  updated_at, deleted_at)
 		values
 	(:id, :name, :username, :email, :password, :created_at, :updated_at, :deleted_at)

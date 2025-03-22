@@ -6,10 +6,11 @@ import (
 	"github.com/henriquepw/pobrin-api/internal/api"
 	"github.com/henriquepw/pobrin-api/internal/database"
 	"github.com/henriquepw/pobrin-api/internal/job"
+	_ "github.com/joho/godotenv/autoload"
 )
 
 func main() {
-	db, err := database.GetDBConnection(database.MainMigration)
+	db, err := database.GetDB()
 	if err != nil {
 		slog.Error("failed to initialize database", "error", err)
 		return
@@ -25,7 +26,6 @@ func main() {
 	apiServer := api.New(db)
 	if err := apiServer.Start(); err != nil {
 		slog.Error("failed to initialize api server", "error", err)
-
 		return
 	}
 }
