@@ -5,9 +5,12 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/clerk/clerk-sdk-go/v2"
+	clerkhttp "github.com/clerk/clerk-sdk-go/v2/http"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
+	"github.com/henriquepw/pobrin-api/internal/domains/balance"
 	"github.com/henriquepw/pobrin-api/internal/domains/recurrence"
 	"github.com/henriquepw/pobrin-api/internal/domains/transaction"
 	"github.com/henriquepw/pobrin-api/internal/env"
@@ -26,6 +29,8 @@ func New(db *sqlx.DB) *apiServer {
 }
 
 func (s *apiServer) Start() error {
+	clerk.SetKey(os.Getenv(env.ClerkApiKey))
+
 	r := chi.NewRouter()
 	r.Use(
 		middleware.Logger,
@@ -50,10 +55,10 @@ func (s *apiServer) Start() error {
 		httputil.ErrorResponse(w, errors.MethodNotAllowed())
 	})
 
-	// Private Routes
-	r.Group(func(r chi.Router) {
-		// add auth middleware
+	r.Route("/user", func(r chi.Router) {
+		r.Use(clerkhttp.WithHeaderAuthorization())
 
+		r.Route("/balance", balance.NewRouter(s.db))
 		r.Route("/transactions", transaction.NewRouter(s.db))
 		r.Route("/recurrences", recurrence.NewRouter(s.db))
 	})

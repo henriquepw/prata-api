@@ -1,7 +1,6 @@
 package database
 
 import (
-	"github.com/henriquepw/pobrin-api/internal/domains/user"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -58,17 +57,4 @@ func TransactionMigration(db *sqlx.DB) error {
 
 	_, err := db.Exec(schema)
 	return err
-}
-
-func InsertUser(createdUser *user.User) func(db *sqlx.DB) error {
-	return func(db *sqlx.DB) error {
-		_, err := db.NamedExec(`
-	insert into users
-	(id,  name,  username,  email,  password,  created_at,  updated_at, deleted_at)
-		values
-	(:id, :name, :username, :email, :password, :created_at, :updated_at, :deleted_at)
-	`, createdUser)
-
-		return err
-	}
 }
