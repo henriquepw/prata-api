@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/henriquepw/pobrin-api/pkg/errors"
+	"github.com/henriquepw/pobrin-api/pkg/errorx"
 	"github.com/henriquepw/pobrin-api/pkg/id"
 	"github.com/henriquepw/pobrin-api/pkg/page"
 	"github.com/henriquepw/pobrin-api/pkg/validate"
@@ -46,7 +46,7 @@ func (s *transactionService) CreateTransaction(ctx context.Context, dto Transact
 
 	err := s.store.Insert(ctx, transaction)
 	if err != nil {
-		return nil, errors.Internal("Failed to create the transaction")
+		return nil, errorx.Internal("Failed to create the transaction")
 	}
 
 	return &transaction, nil
@@ -63,7 +63,7 @@ func (s *transactionService) UpdateTransaction(ctx context.Context, id id.ID, dt
 func (s *transactionService) DeleteTransaction(ctx context.Context, id id.ID) error {
 	err := s.store.Delete(ctx, id)
 	if err != nil {
-		return errors.Internal("Failed to delete the transaction")
+		return errorx.Internal("Failed to delete the transaction")
 	}
 
 	return nil
@@ -72,7 +72,7 @@ func (s *transactionService) DeleteTransaction(ctx context.Context, id id.ID) er
 func (s *transactionService) GetTransaction(ctx context.Context, id id.ID) (*Transaction, error) {
 	transaction, err := s.store.Get(ctx, id)
 	if err != nil {
-		return nil, errors.NotFound("Transaction not found")
+		return nil, errorx.NotFound("Transaction not found")
 	}
 
 	return transaction, nil

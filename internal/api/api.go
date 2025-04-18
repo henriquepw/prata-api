@@ -14,8 +14,8 @@ import (
 	"github.com/henriquepw/pobrin-api/internal/domains/recurrence"
 	"github.com/henriquepw/pobrin-api/internal/domains/transaction"
 	"github.com/henriquepw/pobrin-api/internal/env"
-	"github.com/henriquepw/pobrin-api/pkg/errors"
-	"github.com/henriquepw/pobrin-api/pkg/httputil"
+	"github.com/henriquepw/pobrin-api/pkg/errorx"
+	"github.com/henriquepw/pobrin-api/pkg/httpx"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -48,11 +48,11 @@ func (s *apiServer) Start() error {
 	)
 
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
-		httputil.ErrorResponse(w, errors.NotFound("rota não encontrada"))
+		httpx.ErrorResponse(w, errorx.NotFound("rota não encontrada"))
 	})
 
 	r.MethodNotAllowed(func(w http.ResponseWriter, r *http.Request) {
-		httputil.ErrorResponse(w, errors.MethodNotAllowed())
+		httpx.ErrorResponse(w, errorx.MethodNotAllowed())
 	})
 
 	r.Route("/user", func(r chi.Router) {

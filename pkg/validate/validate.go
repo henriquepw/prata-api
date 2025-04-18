@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/henriquepw/pobrin-api/pkg/errors"
+	"github.com/henriquepw/pobrin-api/pkg/errorx"
 )
 
 var validate *validator.Validate
@@ -116,5 +116,5 @@ func Check[T any](val T) error {
 		e[name] = getTagError(field.Tag(), field.Param())
 	}
 
-	return errors.InvalidRequestData(e)
+	return errorx.InvalidRequestData(e)
 }

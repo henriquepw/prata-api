@@ -1,11 +1,11 @@
-package httputil
+package httpx
 
 import (
 	"encoding/json"
 	"log/slog"
 	"net/http"
 
-	"github.com/henriquepw/pobrin-api/pkg/errors"
+	"github.com/henriquepw/pobrin-api/pkg/errorx"
 )
 
 func writeJSON(w http.ResponseWriter, statusCode int, data any) {
@@ -28,19 +28,19 @@ type Created struct {
 	ID string `json:"id"`
 }
 
-func SuccessCreatedResponse(w http.ResponseWriter, id string) {
-	writeJSON(w, http.StatusCreated, &Created{id})
+func SuccessCreatedResponse(w http.ResponseWriter, data ...any) {
+	writeJSON(w, http.StatusCreated, data[0])
 }
 
 func ErrorResponse(w http.ResponseWriter, err error) {
 	slog.Error("HTTP API", "err", err.Error())
 
-	if e, ok := err.(errors.ServerError); ok {
+	if e, ok := err.(errorx.ServerError); ok {
 		writeJSON(w, e.StatusCode, e)
 		return
 	}
 
-	internalErr := errors.Internal()
+	internalErr := errorx.Internal()
 	writeJSON(w, internalErr.StatusCode, internalErr)
 }
 

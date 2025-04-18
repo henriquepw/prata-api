@@ -3,7 +3,7 @@ package recurrence
 import (
 	"net/http"
 
-	"github.com/henriquepw/pobrin-api/pkg/httputil"
+	"github.com/henriquepw/pobrin-api/pkg/httpx"
 	"github.com/henriquepw/pobrin-api/pkg/id"
 )
 
@@ -16,19 +16,19 @@ func NewHandler(svc RecurrenceService) *recurrenceHandler {
 }
 
 func (h *recurrenceHandler) PostRecurrence(w http.ResponseWriter, r *http.Request) {
-	body, err := httputil.GetBodyRequest[RecurrenceCreate](r)
+	body, err := httpx.GetBodyRequest[RecurrenceCreate](r)
 	if err != nil {
-		httputil.ErrorResponse(w, err)
+		httpx.ErrorResponse(w, err)
 		return
 	}
 
 	recurrence, err := h.svc.CreateRecurrence(r.Context(), body)
 	if err != nil {
-		httputil.ErrorResponse(w, err)
+		httpx.ErrorResponse(w, err)
 		return
 	}
 
-	httputil.SuccessCreatedResponse(w, recurrence.ID.String())
+	httpx.SuccessCreatedResponse(w, recurrence.ID.String())
 }
 
 func (h *recurrenceHandler) PatchRecurrenceByID(w http.ResponseWriter, r *http.Request) {
@@ -37,19 +37,19 @@ func (h *recurrenceHandler) PatchRecurrenceByID(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	body, err := httputil.GetBodyRequest[RecurrenceUpdate](r)
+	body, err := httpx.GetBodyRequest[RecurrenceUpdate](r)
 	if err != nil {
-		httputil.ErrorResponse(w, err)
+		httpx.ErrorResponse(w, err)
 		return
 	}
 
 	err = h.svc.UpdateRecurrence(r.Context(), id, body)
 	if err != nil {
-		httputil.ErrorResponse(w, err)
+		httpx.ErrorResponse(w, err)
 		return
 	}
 
-	httputil.SuccessResponse(w)
+	httpx.SuccessResponse(w)
 }
 
 func (h *recurrenceHandler) GetRecurrenceByID(w http.ResponseWriter, r *http.Request) {
@@ -60,23 +60,23 @@ func (h *recurrenceHandler) GetRecurrenceByID(w http.ResponseWriter, r *http.Req
 
 	recurrence, err := h.svc.GetRecurrence(r.Context(), id)
 	if err != nil {
-		httputil.ErrorResponse(w, err)
+		httpx.ErrorResponse(w, err)
 		return
 	}
 
-	httputil.SuccessResponse(w, recurrence)
+	httpx.SuccessResponse(w, recurrence)
 }
 
 func (h *recurrenceHandler) GetRecurrenceList(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query()
 	query := RecurrenceQuery{
 		Cursor: q.Get("cursor"),
-		Limit:  httputil.GetQueryInt(q, "limit", 10),
+		Limit:  httpx.GetQueryInt(q, "limit", 10),
 	}
 
 	recurrence := h.svc.ListRecurrence(r.Context(), query)
 
-	httputil.SuccessResponse(w, recurrence)
+	httpx.SuccessResponse(w, recurrence)
 }
 
 func (h *recurrenceHandler) DeleteRecurrenceByID(w http.ResponseWriter, r *http.Request) {
@@ -87,9 +87,9 @@ func (h *recurrenceHandler) DeleteRecurrenceByID(w http.ResponseWriter, r *http.
 
 	err = h.svc.DeleteRecurrence(r.Context(), id)
 	if err != nil {
-		httputil.ErrorResponse(w, err)
+		httpx.ErrorResponse(w, err)
 		return
 	}
 
-	httputil.SuccessResponse(w)
+	httpx.SuccessResponse(w)
 }

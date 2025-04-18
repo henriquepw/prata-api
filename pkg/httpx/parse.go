@@ -1,4 +1,4 @@
-package httputil
+package httpx
 
 import (
 	"encoding/json"
@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/henriquepw/pobrin-api/pkg/errors"
+	"github.com/henriquepw/pobrin-api/pkg/errorx"
 )
 
 func GetQueryString(q url.Values, name string, defaultVal string) string {
@@ -66,7 +66,7 @@ func GetBodyRequest[T any](r *http.Request) (T, error) {
 
 	var data T
 	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
-		return data, errors.InvalidJSON()
+		return data, errorx.InvalidJSON()
 	}
 
 	return data, nil
@@ -77,7 +77,7 @@ func GetJsonResponse[T any](r *http.Response) (T, error) {
 
 	var data T
 	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
-		return data, errors.InvalidJSON()
+		return data, errorx.InvalidJSON()
 	}
 
 	return data, nil

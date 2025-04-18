@@ -4,11 +4,11 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 
-	serverError "github.com/henriquepw/pobrin-api/pkg/errors"
+	"github.com/henriquepw/pobrin-api/pkg/errorx"
 	cuid "github.com/nrednav/cuid2"
 )
 
-var ErrInvalidID = serverError.ServerError{Message: "invalid format id"}
+var ErrInvalidID = errorx.ServerError{Message: "invalid format id"}
 
 type ID string
 

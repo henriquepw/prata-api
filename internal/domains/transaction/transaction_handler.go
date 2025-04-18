@@ -3,7 +3,7 @@ package transaction
 import (
 	"net/http"
 
-	"github.com/henriquepw/pobrin-api/pkg/httputil"
+	"github.com/henriquepw/pobrin-api/pkg/httpx"
 	"github.com/henriquepw/pobrin-api/pkg/id"
 )
 
@@ -16,19 +16,19 @@ func NewHandler(svc TransactionService) *transactionHandler {
 }
 
 func (h *transactionHandler) PostTransaction(w http.ResponseWriter, r *http.Request) {
-	body, err := httputil.GetBodyRequest[TransactionCreate](r)
+	body, err := httpx.GetBodyRequest[TransactionCreate](r)
 	if err != nil {
-		httputil.ErrorResponse(w, err)
+		httpx.ErrorResponse(w, err)
 		return
 	}
 
 	transaction, err := h.svc.CreateTransaction(r.Context(), body)
 	if err != nil {
-		httputil.ErrorResponse(w, err)
+		httpx.ErrorResponse(w, err)
 		return
 	}
 
-	httputil.SuccessCreatedResponse(w, transaction.ID.String())
+	httpx.SuccessCreatedResponse(w, transaction.ID.String())
 }
 
 func (h *transactionHandler) PatchTransactionByID(w http.ResponseWriter, r *http.Request) {
@@ -37,19 +37,19 @@ func (h *transactionHandler) PatchTransactionByID(w http.ResponseWriter, r *http
 		return
 	}
 
-	body, err := httputil.GetBodyRequest[TransactionUpdate](r)
+	body, err := httpx.GetBodyRequest[TransactionUpdate](r)
 	if err != nil {
-		httputil.ErrorResponse(w, err)
+		httpx.ErrorResponse(w, err)
 		return
 	}
 
 	err = h.svc.UpdateTransaction(r.Context(), id, body)
 	if err != nil {
-		httputil.ErrorResponse(w, err)
+		httpx.ErrorResponse(w, err)
 		return
 	}
 
-	httputil.SuccessResponse(w)
+	httpx.SuccessResponse(w)
 }
 
 func (h *transactionHandler) GetTransactionByID(w http.ResponseWriter, r *http.Request) {
@@ -60,23 +60,23 @@ func (h *transactionHandler) GetTransactionByID(w http.ResponseWriter, r *http.R
 
 	transaction, err := h.svc.GetTransaction(r.Context(), id)
 	if err != nil {
-		httputil.ErrorResponse(w, err)
+		httpx.ErrorResponse(w, err)
 		return
 	}
 
-	httputil.SuccessResponse(w, transaction)
+	httpx.SuccessResponse(w, transaction)
 }
 
 func (h *transactionHandler) GetTransactionList(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query()
 	query := TransactionQuery{
 		Cursor: q.Get("cursor"),
-		Limit:  httputil.GetQueryInt(q, "limit", 10),
+		Limit:  httpx.GetQueryInt(q, "limit", 10),
 	}
 
 	transaction := h.svc.ListTransaction(r.Context(), query)
 
-	httputil.SuccessResponse(w, transaction)
+	httpx.SuccessResponse(w, transaction)
 }
 
 func (h *transactionHandler) DeleteTransactionByID(w http.ResponseWriter, r *http.Request) {
@@ -87,9 +87,9 @@ func (h *transactionHandler) DeleteTransactionByID(w http.ResponseWriter, r *htt
 
 	err = h.svc.DeleteTransaction(r.Context(), id)
 	if err != nil {
-		httputil.ErrorResponse(w, err)
+		httpx.ErrorResponse(w, err)
 		return
 	}
 
-	httputil.SuccessResponse(w)
+	httpx.SuccessResponse(w)
 }

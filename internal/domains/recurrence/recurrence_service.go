@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/henriquepw/pobrin-api/pkg/errors"
+	"github.com/henriquepw/pobrin-api/pkg/errorx"
 	"github.com/henriquepw/pobrin-api/pkg/id"
 	"github.com/henriquepw/pobrin-api/pkg/page"
 	"github.com/henriquepw/pobrin-api/pkg/validate"
@@ -47,7 +47,7 @@ func (s *recurrenceService) CreateRecurrence(ctx context.Context, dto Recurrence
 
 	err := s.store.Insert(ctx, recurrence)
 	if err != nil {
-		return nil, errors.Internal("Failed to create the recurrence")
+		return nil, errorx.Internal("Failed to create the recurrence")
 	}
 
 	return &recurrence, nil
@@ -66,7 +66,7 @@ func (s *recurrenceService) UpdateRecurrence(ctx context.Context, id id.ID, dto 
 func (s *recurrenceService) DeleteRecurrence(ctx context.Context, id id.ID) error {
 	err := s.store.Delete(ctx, id)
 	if err != nil {
-		return errors.Internal("Failed to delete the recurrence")
+		return errorx.Internal("Failed to delete the recurrence")
 	}
 
 	return nil
@@ -75,7 +75,7 @@ func (s *recurrenceService) DeleteRecurrence(ctx context.Context, id id.ID) erro
 func (s *recurrenceService) GetRecurrence(ctx context.Context, id id.ID) (*Recurrence, error) {
 	recurrence, err := s.store.Get(ctx, id)
 	if err != nil {
-		return nil, errors.NotFound("Recurrence not found")
+		return nil, errorx.NotFound("Recurrence not found")
 	}
 
 	return recurrence, nil
