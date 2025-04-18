@@ -55,11 +55,8 @@ func (s *apiServer) Start() error {
 		httpx.ErrorResponse(w, errorx.MethodNotAllowed())
 	})
 
-	version := os.Getenv(env.Version)
 	r.Route("/user", func(r chi.Router) {
-		if version != "develop" {
-			r.Use(clerkhttp.WithHeaderAuthorization())
-		}
+		r.Use(clerkhttp.WithHeaderAuthorization())
 
 		r.Route("/balance", balance.NewRouter(s.db))
 		r.Route("/transactions", transaction.NewRouter(s.db))
