@@ -6,19 +6,16 @@ import (
 
 type Migration func(*sqlx.DB) error
 
-func UserMigration(db *sqlx.DB) error {
+func BalanceMigration(db *sqlx.DB) error {
 	schema := `
-    CREATE TABLE IF NOT EXISTS users (
+    CREATE TABLE IF NOT EXISTS balances (
       id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      label INTEGER NOT NULL,
+      percent DATETIME NOT NULL,
       created_at DATETIME NOT NULL,
-      updated_at DATETIME NOT NULL,
-	    deleted_at DATETIME NULL,
-	    last_login DATETIME NULL,
-      name TEXT NOT NULL,
-      username TEXT NOT NULL,
-      email TEXT NOT NULL,
-      password TEXT NOT NULL
-    )
+      updated_at DATETIME NOT NULL
+    );
   `
 
 	_, err := db.Exec(schema)

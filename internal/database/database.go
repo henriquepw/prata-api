@@ -22,6 +22,7 @@ func GetDB() (*sqlx.DB, error) {
 
 		if dbConn == nil {
 			db, err := startDB(
+				BalanceMigration,
 				TransactionMigration,
 				RecurrenceMigration,
 			)
