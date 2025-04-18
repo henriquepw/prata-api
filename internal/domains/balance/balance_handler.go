@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/henriquepw/pobrin-api/internal/auth"
-	"github.com/henriquepw/pobrin-api/pkg/httputil"
+	"github.com/henriquepw/pobrin-api/pkg/httpx"
 )
 
 type balanceHandler struct {
@@ -18,61 +18,61 @@ func NewHandler(svc BalanceService) *balanceHandler {
 func (h *balanceHandler) PostUserBalance(w http.ResponseWriter, r *http.Request) {
 	session, err := auth.GetSession(r)
 	if err != nil {
-		httputil.ErrorResponse(w, err)
+		httpx.ErrorResponse(w, err)
 		return
 	}
 
-	body, err := httputil.GetBodyRequest[BalanceCreate](r)
+	body, err := httpx.GetBodyRequest[BalanceCreate](r)
 	if err != nil {
-		httputil.ErrorResponse(w, err)
+		httpx.ErrorResponse(w, err)
 		return
 	}
 	body.UserID = session.Subject
 
 	item, err := h.svc.CreateBalance(r.Context(), body)
 	if err != nil {
-		httputil.ErrorResponse(w, err)
+		httpx.ErrorResponse(w, err)
 		return
 	}
 
-	httputil.SuccessCreatedResponse(w, item.ID.String())
+	httpx.SuccessCreatedResponse(w, item)
 }
 
 func (h *balanceHandler) PutUserBalance(w http.ResponseWriter, r *http.Request) {
 	session, err := auth.GetSession(r)
 	if err != nil {
-		httputil.ErrorResponse(w, err)
+		httpx.ErrorResponse(w, err)
 		return
 	}
 
-	body, err := httputil.GetBodyRequest[BalanceUpdate](r)
+	body, err := httpx.GetBodyRequest[BalanceUpdate](r)
 	if err != nil {
-		httputil.ErrorResponse(w, err)
+		httpx.ErrorResponse(w, err)
 		return
 	}
 	body.UserID = session.Subject
 
-	err = h.svc.UpdateBalance(r.Context(), body)
+	item, err := h.svc.UpdateBalance(r.Context(), body)
 	if err != nil {
-		httputil.ErrorResponse(w, err)
+		httpx.ErrorResponse(w, err)
 		return
 	}
 
-	httputil.SuccessResponse(w)
+	httpx.SuccessResponse(w, item)
 }
 
 func (h *balanceHandler) GetUserBalance(w http.ResponseWriter, r *http.Request) {
 	session, err := auth.GetSession(r)
 	if err != nil {
-		httputil.ErrorResponse(w, err)
+		httpx.ErrorResponse(w, err)
 		return
 	}
 
 	item, err := h.svc.GetBalance(r.Context(), session.Subject)
 	if err != nil {
-		httputil.ErrorResponse(w, err)
+		httpx.ErrorResponse(w, err)
 		return
 	}
 
-	httputil.SuccessResponse(w, item)
+	httpx.SuccessResponse(w, item)
 }
