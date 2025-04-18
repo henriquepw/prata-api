@@ -31,6 +31,8 @@ func (s *balanceService) CreateBalance(ctx context.Context, dto BalanceCreate) (
 		return balance, err
 	}
 
+	// TODO: validate existis data
+
 	for _, p := range dto.Pieces {
 		balance.Pieces = append(balance.Pieces, Piece{
 			ID:        id.New(),
@@ -57,6 +59,8 @@ func (s *balanceService) UpdateBalance(ctx context.Context, dto BalanceUpdate) (
 	if err := validate.Check(dto); err != nil {
 		return balance, err
 	}
+
+	// TODO: validate existis data
 
 	for _, p := range dto.Pieces {
 		piece := Piece{

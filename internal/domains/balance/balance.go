@@ -8,8 +8,8 @@ import (
 )
 
 type PieceCreate struct {
-	Label   string `json:"label" db:"label" validate:"required,min=3"`
-	Percent uint8  `json:"percent" db:"percent" validate:"min=0,max=100"`
+	Label   string `json:"label" validate:"required,min=3"`
+	Percent uint8  `json:"percent" validate:"min=0,max=100"`
 }
 
 type BalanceCreate struct {
@@ -18,9 +18,9 @@ type BalanceCreate struct {
 }
 
 type PieceUpdate struct {
-	ID      id.ID  `json:"id" db:"id"`
-	Label   string `json:"label" db:"label" validate:"required,min=3"`
-	Percent uint8  `json:"percent" db:"percent"`
+	ID      id.ID  `json:"id"`
+	Label   string `json:"label" validate:"required,min=3"`
+	Percent uint8  `json:"percent" validate:"min=0,max=100"`
 }
 
 type BalanceUpdate struct {
@@ -38,7 +38,7 @@ type Piece struct {
 }
 
 type Balance struct {
-	Pieces []Piece
+	Pieces []Piece `json:"pieces"`
 }
 
 func (b Balance) CheckPercent() error {
