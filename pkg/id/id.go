@@ -30,7 +30,7 @@ func (id *ID) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
-	if isValid(s) {
+	if !isValid(s) {
 		return ErrInvalidID
 	}
 
@@ -39,11 +39,11 @@ func (id *ID) UnmarshalJSON(b []byte) error {
 }
 
 func (id ID) MarshalJSON() ([]byte, error) {
-	if isValid(string(id)) {
+	if !isValid(id) {
 		return nil, ErrInvalidID
 	}
 
-	return json.Marshal(string(id))
+	return json.Marshal(id.String())
 }
 
 func (id ID) String() string {
