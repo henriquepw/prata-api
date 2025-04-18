@@ -22,29 +22,6 @@ func (h *balanceHandler) PostUserBalance(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	body, err := httpx.GetBodyRequest[BalanceCreate](r)
-	if err != nil {
-		httpx.ErrorResponse(w, err)
-		return
-	}
-	body.UserID = session.Subject
-
-	item, err := h.svc.CreateBalance(r.Context(), body)
-	if err != nil {
-		httpx.ErrorResponse(w, err)
-		return
-	}
-
-	httpx.SuccessCreatedResponse(w, item)
-}
-
-func (h *balanceHandler) PutUserBalance(w http.ResponseWriter, r *http.Request) {
-	session, err := auth.GetSession(r)
-	if err != nil {
-		httpx.ErrorResponse(w, err)
-		return
-	}
-
 	body, err := httpx.GetBodyRequest[BalanceUpdate](r)
 	if err != nil {
 		httpx.ErrorResponse(w, err)
@@ -52,7 +29,7 @@ func (h *balanceHandler) PutUserBalance(w http.ResponseWriter, r *http.Request) 
 	}
 	body.UserID = session.Subject
 
-	item, err := h.svc.UpdateBalance(r.Context(), body)
+	item, err := h.svc.UpsertBalance(r.Context(), body)
 	if err != nil {
 		httpx.ErrorResponse(w, err)
 		return

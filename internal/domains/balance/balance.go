@@ -7,16 +7,6 @@ import (
 	"github.com/henriquepw/pobrin-api/pkg/id"
 )
 
-type PieceCreate struct {
-	Label   string `json:"label" validate:"required,min=3"`
-	Percent uint8  `json:"percent" validate:"min=0,max=100"`
-}
-
-type BalanceCreate struct {
-	UserID string        `json:"userId" validate:"required"`
-	Pieces []PieceCreate `json:"pieces" validate:"required"`
-}
-
 type PieceUpdate struct {
 	ID      id.ID  `json:"id"`
 	Label   string `json:"label" validate:"required,min=3"`
