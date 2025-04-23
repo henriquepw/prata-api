@@ -10,7 +10,7 @@ import (
 type PieceUpdate struct {
 	ID      id.ID  `json:"id"`
 	Label   string `json:"label" validate:"required,min=3"`
-	Percent uint8  `json:"percent" validate:"min=0,max=100"`
+	Percent int    `json:"percent" validate:"min=0,max=100"`
 }
 
 type BalanceUpdate struct {
@@ -19,12 +19,13 @@ type BalanceUpdate struct {
 }
 
 type Piece struct {
-	ID        id.ID     `json:"id" db:"id"`
-	UserID    string    `json:"userId" db:"user_id"`
-	Label     string    `json:"label" db:"label"`
-	Percent   uint8     `json:"percent" db:"percent"`
-	CreatedAt time.Time `json:"createdAt" db:"created_at"`
-	UpdatedAt time.Time `json:"updatedAt" db:"updated_at"`
+	ID        id.ID      `json:"id" db:"id"`
+	UserID    string     `json:"userId" db:"user_id"`
+	Label     string     `json:"label" db:"label"`
+	Percent   int        `json:"percent" db:"percent"`
+	CreatedAt time.Time  `json:"createdAt" db:"created_at"`
+	UpdatedAt time.Time  `json:"updatedAt" db:"updated_at"`
+	DeletedAt *time.Time `json:"deletedAt" db:"deleted_at"`
 }
 
 type Balance struct {
@@ -32,7 +33,7 @@ type Balance struct {
 }
 
 func (b Balance) CheckPercent() error {
-	var percentTotal uint8
+	var percentTotal int
 	for _, p := range b.Pieces {
 		percentTotal += p.Percent
 	}

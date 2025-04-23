@@ -31,7 +31,6 @@ type Transaction struct {
 	ReceivedAt  time.Time       `json:"receivedAt" db:"received_at"`
 	CreatedAt   time.Time       `json:"createdAt" db:"created_at"`
 	UpdatedAt   time.Time       `json:"updatedAt" db:"updated_at"`
-	DeletedAt   *time.Time      `json:"deletedAt" db:"deleted_at"`
 }
 
 type TransactionCreate struct {
@@ -44,11 +43,16 @@ type TransactionCreate struct {
 }
 
 type TransactionUpdate struct {
-	Amount     int       `json:"amount"`
-	ReceivedAt time.Time `json:"receivedAt"`
+	Amount      int       `json:"amount"`
+	Description string    `json:"description"`
+	ReceivedAt  time.Time `json:"receivedAt"`
 }
 
 type TransactionQuery struct {
-	Cursor string `json:"cursor"`
-	Limit  int    `json:"limit" validate:"required,min=0"`
+	Limit         int
+	Cursor        string
+	Search        string
+	Type          TransactionType
+	ReceivedAtGte time.Time
+	ReceivedAtLte time.Time
 }
