@@ -6,6 +6,7 @@ import (
 
 	"github.com/henriquepw/pobrin-api/pkg/errorx"
 	cuid "github.com/nrednav/cuid2"
+	"github.com/oklog/ulid/v2"
 )
 
 var ErrInvalidID = errorx.ServerError{Message: "invalid format id"}
@@ -78,22 +79,6 @@ func (id ID) Value() (driver.Value, error) {
 	return string(id), nil
 }
 
-func mustCreateID(size int) ID {
-	generate, err := cuid.Init(
-		cuid.WithLength(size),
-		cuid.WithFingerprint("pobrin-api"),
-	)
-	if err != nil {
-		panic(err)
-	}
-
-	return ID(generate())
-}
-
 func New() ID {
-	return mustCreateID(24)
-}
-
-func NewTiny() ID {
-	return mustCreateID(6)
+	return ID(ulid.Make().String())
 }
