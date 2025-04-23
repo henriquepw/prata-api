@@ -1,12 +1,14 @@
 package job
 
 import (
-	"log"
 	"log/slog"
 	"time"
 
 	"github.com/go-co-op/gocron/v2"
 	"github.com/google/uuid"
+	"github.com/henriquepw/pobrin-api/internal/domains/recurrence"
+	"github.com/henriquepw/pobrin-api/internal/domains/transaction"
+	"github.com/jmoiron/sqlx"
 )
 
 const (
@@ -15,11 +17,13 @@ const (
 )
 
 type jobServer struct {
-	scheduler gocron.Scheduler
-	running   map[string]struct{}
+	scheduler       gocron.Scheduler
+	running         map[string]struct{}
+	recurrenceStore recurrence.RecurrenceStore
+	transactionSVC  transaction.TransactionService
 }
 
-func New() *jobServer {
+func New(db *sqlx.DB) *jobServer {
 	s, err := gocron.NewScheduler(
 		gocron.WithStopTimeout(3*time.Hour),
 		gocron.WithGlobalJobOptions(
@@ -39,13 +43,19 @@ func New() *jobServer {
 		panic(err)
 	}
 
+	recurrenceStore := recurrence.NewStore(db)
+	transactionStore := transaction.NewStore(db)
+	transactionSVC := transaction.NewService(transactionStore)
+
 	return &jobServer{
-		scheduler: s,
-		running:   map[string]struct{}{},
+		scheduler:       s,
+		running:         map[string]struct{}{},
+		recurrenceStore: recurrenceStore,
+		transactionSVC:  transactionSVC,
 	}
 }
 
-func (s *jobServer) addTask(cron, name string, task func()) {
+func (s *jobServer) addTask(cron, name string, task func() error) {
 	_, err := s.scheduler.NewJob(gocron.CronJob(cron, false), gocron.NewTask(func() {
 		_, ok := s.running[name]
 		if ok {
@@ -63,9 +73,7 @@ func (s *jobServer) addTask(cron, name string, task func()) {
 }
 
 func (s *jobServer) Start() error {
-	log.Print("TODO JOB")
-
-	s.addTask(CronEveryday, "create-transactions-by-transactions", createTransactionByRecurrence)
+	s.addTask(CronEveryday, "create-transactions-by-transactions", s.createTransactionByRecurrence)
 
 	return nil
 }

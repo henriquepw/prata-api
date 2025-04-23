@@ -17,7 +17,7 @@ func main() {
 	}
 	defer db.Close()
 
-	jobServer := job.New()
+	jobServer := job.New(db)
 	if err := jobServer.Start(); err != nil {
 		slog.Error("failed to start job server", "error", err)
 		return

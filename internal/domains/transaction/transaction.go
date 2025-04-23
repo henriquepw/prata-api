@@ -23,8 +23,8 @@ func (f TransactionType) Validate() bool {
 
 type Transaction struct {
 	ID          id.ID           `json:"id" db:"id"`
-	AccountID   id.ID           `json:"accountId" db:"account_id"`
-	Tags        []string        `json:"tags" db:"tags"`
+	UserID      string          `json:"userId" db:"user_id"`
+	BalanceID   *id.ID          `json:"balanceId" db:"balance_id"`
 	Type        TransactionType `json:"type" db:"type"`
 	Description string          `json:"description" db:"description"`
 	Amount      int             `json:"amount" db:"amount"`
@@ -35,8 +35,8 @@ type Transaction struct {
 }
 
 type TransactionCreate struct {
-	AccountID   id.ID           `json:"accountId" validate:"required"`
-	Tags        []string        `json:"tags" validate:"required"`
+	UserID      string          `json:"userId" validate:"required"`
+	BalanceID   *id.ID          `json:"balanceId"`
 	Type        TransactionType `json:"type" validate:"required,custom"`
 	Description string          `json:"description" validate:"required"`
 	Amount      int             `json:"amount" validate:"required"`
@@ -49,7 +49,6 @@ type TransactionUpdate struct {
 }
 
 type TransactionQuery struct {
-	Cursor    string `json:"cursor"`
-	Limit     int    `json:"limit" validate:"required,min=0"`
-	AccountID string `json:"accountId"`
+	Cursor string `json:"cursor"`
+	Limit  int    `json:"limit" validate:"required,min=0"`
 }

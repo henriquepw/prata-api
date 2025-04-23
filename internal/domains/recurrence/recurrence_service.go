@@ -33,16 +33,20 @@ func (s *recurrenceService) CreateRecurrence(ctx context.Context, dto Recurrence
 
 	now := time.Now()
 	recurrence := Recurrence{
-		ID:           id.New(),
-		AccountID:    dto.AccountID,
-		Description:  dto.Description,
-		Frequence:    dto.Frequence,
-		Installments: dto.Installments,
-		StartAt:      dto.StartAt,
-		EndAt:        dto.EndAt,
-		CreatedAt:    now,
-		UpdatedAt:    now,
-		DeletedAt:    nil,
+		ID:          id.New(),
+		UserID:      dto.UserID,
+		Amount:      dto.Amount,
+		Description: dto.Description,
+		Frequence:   dto.Frequence,
+		StartAt:     dto.StartAt,
+		Day:         dto.StartAt.Day(),
+		Week:        int(dto.StartAt.Weekday()),
+		Month:       int(dto.StartAt.Month()),
+		YearDay:     dto.StartAt.YearDay(),
+		EndAt:       dto.EndAt,
+		CreatedAt:   now,
+		UpdatedAt:   now,
+		DeletedAt:   nil,
 	}
 
 	err := s.store.Insert(ctx, recurrence)
@@ -58,7 +62,10 @@ func (s *recurrenceService) UpdateRecurrence(ctx context.Context, id id.ID, dto 
 		return err
 	}
 
-	// TODO:
+	err := s.store.Update(ctx, id, dto)
+	if err != nil {
+		return errorx.Internal("Can't update the recurrence")
+	}
 
 	return nil
 }
