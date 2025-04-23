@@ -43,23 +43,42 @@ func (s *recurrenceStore) Delete(ctx context.Context, id id.ID) error {
 	return err
 }
 
-// TODO:
 func (s *recurrenceStore) Update(ctx context.Context, id id.ID, i RecurrenceUpdate) error {
-	return nil
-	// query := `
-	//    UPDATE recurrence
-	//    SET amount = ?, received_at = ?, updated_at = ?
-	//    WHERE id = ?
-	//  `
-	// _, err := s.db.ExecContext(
-	// 	ctx, query,
-	// 	i.Amount,
-	// 	date.FormatToISO(i.ReceivedAt),
-	// 	date.FormatToISO(time.Now()),
-	// 	id,
-	// )
-	//
-	// return err
+	var queryBuilder strings.Builder
+
+	queryBuilder.WriteString("UPDATE recurrences SET updated_at = ?")
+	args := []any{date.FormatToISO(time.Now())}
+
+	if i.Amount != 0 {
+		queryBuilder.WriteString(", amount = ?")
+		args = append(args, i.Amount)
+	}
+
+	if i.Description != "" {
+		queryBuilder.WriteString(", description = ?")
+		args = append(args, i.Description)
+	}
+
+	if i.Frequence != "" {
+		queryBuilder.WriteString(", frequence = ?")
+		args = append(args, i.Frequence)
+	}
+
+	if i.BalanceID == nil || *i.BalanceID != "" {
+		queryBuilder.WriteString(", balance_id = ?")
+		args = append(args, i.BalanceID)
+	}
+
+	if i.EndAt == nil || !i.EndAt.IsZero() {
+		queryBuilder.WriteString(", end_at = ?")
+		args = append(args, date.FormatToISO(*i.EndAt))
+	}
+
+	queryBuilder.WriteString(" WHERE id ?")
+	args = append(args, id)
+
+	_, err := s.db.ExecContext(ctx, queryBuilder.String(), args)
+	return err
 }
 
 func (s *recurrenceStore) Get(ctx context.Context, id id.ID) (*Recurrence, error) {

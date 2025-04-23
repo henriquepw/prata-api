@@ -23,7 +23,6 @@ type Recurrence struct {
 	YearDay     int                         `json:"yearDay" db:"year_day"`
 	CreatedAt   time.Time                   `json:"createdAt" db:"created_at"`
 	UpdatedAt   time.Time                   `json:"updatedAt" db:"updated_at"`
-	DeletedAt   *time.Time                  `json:"deletedAt,omitempty" db:"deleted_at"`
 }
 
 type RecurrenceCreate struct {
@@ -38,11 +37,11 @@ type RecurrenceCreate struct {
 }
 
 type RecurrenceUpdate struct {
-	BalanceID    *string    `json:"balanceId" validate:"omitempty"`
-	Description  *string    `json:"description" validate:"omitempty"`
-	Frequence    *Frequence `json:"frequence" validate:"omitempty,custom"`
-	Installments *uint      `json:"installments" validate:"omitempty,min=1"`
-	EndAt        *time.Time `json:"endAt" validate:"omitempty"`
+	BalanceID   *id.ID     `json:"balanceId" validate:"omitempty"`
+	Amount      int        `json:"amount" validate:"omitempty"`
+	Description string     `json:"description" validate:"omitempty"`
+	Frequence   Frequence  `json:"frequence" validate:"omitempty,custom"`
+	EndAt       *time.Time `json:"endAt" validate:"omitempty"`
 }
 
 type RecurrenceQuery struct {

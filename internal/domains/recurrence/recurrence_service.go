@@ -46,7 +46,6 @@ func (s *recurrenceService) CreateRecurrence(ctx context.Context, dto Recurrence
 		EndAt:       dto.EndAt,
 		CreatedAt:   now,
 		UpdatedAt:   now,
-		DeletedAt:   nil,
 	}
 
 	err := s.store.Insert(ctx, recurrence)
