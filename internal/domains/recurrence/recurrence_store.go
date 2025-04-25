@@ -148,7 +148,7 @@ func (s *recurrenceStore) List(ctx context.Context, q RecurrenceQuery) (*page.Cu
 	}
 
 	page := page.New(recurrences, q.Limit, func(i Recurrence) string {
-		return date.FormatToISO(i.CreatedAt)
+		return i.ID.String()
 	})
 
 	return page, nil

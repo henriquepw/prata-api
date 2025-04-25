@@ -2,6 +2,7 @@ package transaction
 
 import (
 	"context"
+	"strings"
 	"time"
 
 	"github.com/henriquepw/pobrin-api/pkg/date"
@@ -28,8 +29,8 @@ func NewStore(db *sqlx.DB) TransactionStore {
 
 func (s *transactionStore) Insert(ctx context.Context, i Transaction) error {
 	query := `
-    INSERT INTO transactions (id, account_id, tags, type, description, amount, received_at, created_at, updated_at)
-    VALUES (:id, :account_id, :tags, :type, :description, :amount, :received_at, :created_at, :updated_at)
+    INSERT INTO transactions (id, user_id, balance_id, type, description, amount, received_at, created_at, updated_at)
+    VALUES (:id, :user_id, :balance_id, :type, :description, :amount, :received_at, :created_at, :updated_at)
   `
 	_, err := s.db.NamedExecContext(ctx, query, i)
 
@@ -42,19 +43,30 @@ func (s *transactionStore) Delete(ctx context.Context, id id.ID) error {
 }
 
 func (s *transactionStore) Update(ctx context.Context, id id.ID, i TransactionUpdate) error {
-	query := `
-    UPDATE transactions
-    SET amount = ?, received_at = ?, updated_at = ?
-    WHERE id = ?
-  `
-	_, err := s.db.ExecContext(
-		ctx, query,
-		i.Amount,
-		date.FormatToISO(i.ReceivedAt),
-		date.FormatToISO(time.Now()),
-		id,
-	)
+	args := []any{}
+	var queryBuilder strings.Builder
+	queryBuilder.WriteString("UPDATE transactions set updated_at = ?")
+	args = append(args, date.FormatToISO(time.Now()))
 
+	if i.Amount != 0 {
+		queryBuilder.WriteString(", amount = ?")
+		args = append(args, i.Amount)
+	}
+
+	if i.Description != "" {
+		queryBuilder.WriteString(", description = ?")
+		args = append(args, i.Description)
+	}
+
+	if !i.ReceivedAt.IsZero() {
+		queryBuilder.WriteString(", received_at = ?")
+		args = append(args, date.FormatToISO(i.ReceivedAt))
+	}
+
+	queryBuilder.WriteString(" WHERE id = ?")
+	args = append(args, id)
+
+	_, err := s.db.ExecContext(ctx, queryBuilder.String(), args...)
 	return err
 }
 
@@ -71,22 +83,49 @@ func (s *transactionStore) Get(ctx context.Context, id id.ID) (*Transaction, err
 }
 
 func (s *transactionStore) List(ctx context.Context, q TransactionQuery) (*page.Cursor[Transaction], error) {
-	query := `
-    SELECT *
-    FROM transactions
-    WHERE received_at > ?
-    ORDER BY received_at ASC
-    LIMIT ?
-  `
+	var queryBuilder strings.Builder
+	queryBuilder.WriteString("SELECT * FROM transactions")
+
+	where := []string{}
+	args := []any{}
+
+	if q.Cursor != "" {
+		where = append(where, "id > ?")
+		args = append(args, q.Cursor)
+	}
+
+	if q.Search != "" {
+		where = append(where, "description LIKE %?%")
+		args = append(args, q.Search)
+	}
+
+	if !q.ReceivedAtGte.IsZero() {
+		where = append(where, "start_at >= ?")
+		args = append(args, date.FormatToISO(q.ReceivedAtGte))
+	}
+	if !q.ReceivedAtLte.IsZero() {
+		where = append(where, "start_at <= ?")
+		args = append(args, date.FormatToISO(q.ReceivedAtLte))
+	}
+
+	if len(where) > 0 {
+		queryBuilder.WriteString(" WHERE ")
+		queryBuilder.WriteString(strings.Join(where, " AND "))
+	}
+
+	if q.Limit > 0 {
+		queryBuilder.WriteString(" Limit ?")
+		args = append(args, q.Limit+1)
+	}
 
 	var transactions []Transaction
-	err := s.db.Select(&transactions, query, q.Cursor, q.Limit+1)
+	err := s.db.Select(&transactions, queryBuilder.String(), args...)
 	if err != nil {
 		return nil, err
 	}
 
 	page := page.New(transactions, q.Limit, func(i Transaction) string {
-		return date.FormatToISO(i.ReceivedAt)
+		return i.ID.String()
 	})
 
 	return page, nil
