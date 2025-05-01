@@ -4,7 +4,7 @@
 run-app
 
 .DS_Store
-fly.toml
+fly*.toml
 
 .env*
 !.env.example

@@ -37,5 +37,5 @@ test:
 ## build: build the app into a binary
 .PHONY: build
 build:
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o ./run-app ./main.go
+	go build -o ./main ./main.go
 
