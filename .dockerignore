@@ -1,0 +1,16 @@
+# flyctl launch added from .gitignore
+**/.gitlab-ci-local
+**/.tmp
+**/.build
+**/run-app
+
+**/.DS_Store
+**/fly.toml
+
+**/.env.example
+**/.env.test
+**/.vscode
+**/.idea
+
+**/*.db
+**/*.db-journal
