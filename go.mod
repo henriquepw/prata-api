@@ -1,6 +1,6 @@
 module github.com/henriquepw/pobrin-api
 
-go 1.23.4
+go 1.24.2
 
 require (
 	github.com/clerk/clerk-sdk-go/v2 v2.3.0
@@ -12,7 +12,6 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/joho/godotenv v1.5.1
-	github.com/nrednav/cuid2 v1.0.1
 	github.com/oklog/ulid/v2 v2.1.0
 	github.com/tursodatabase/go-libsql v0.0.0-20241221181756-6121e81fbf92
 )

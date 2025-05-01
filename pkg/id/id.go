@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 
 	"github.com/henriquepw/pobrin-api/pkg/errorx"
-	cuid "github.com/nrednav/cuid2"
 	"github.com/oklog/ulid/v2"
 )
 
@@ -14,7 +13,8 @@ var ErrInvalidID = errorx.ServerError{Message: "invalid format id"}
 type ID string
 
 func isValid[T string | ID](id T) bool {
-	return cuid.IsCuid(string(id))
+	_, err := ulid.Parse(string(id))
+	return err == nil
 }
 
 func Parse(s string) (ID, error) {
