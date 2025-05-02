@@ -3,7 +3,7 @@ package auth
 import (
 	"net/http"
 
-	"github.com/henriquepw/pobrin-api/pkg/httpx"
+	"github.com/henriquepw/prata-api/pkg/httpx"
 )
 
 type authHandler struct {

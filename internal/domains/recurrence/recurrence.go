@@ -3,8 +3,8 @@ package recurrence
 import (
 	"time"
 
-	"github.com/henriquepw/pobrin-api/internal/domains/transaction"
-	"github.com/henriquepw/pobrin-api/pkg/id"
+	"github.com/henriquepw/prata-api/internal/domains/transaction"
+	"github.com/henriquepw/prata-api/pkg/id"
 )
 
 type Recurrence struct {

@@ -3,9 +3,9 @@ package user
 import (
 	"context"
 
-	"github.com/henriquepw/pobrin-api/pkg/errorx"
-	"github.com/henriquepw/pobrin-api/pkg/hash"
-	"github.com/henriquepw/pobrin-api/pkg/id"
+	"github.com/henriquepw/prata-api/pkg/errorx"
+	"github.com/henriquepw/prata-api/pkg/hash"
+	"github.com/henriquepw/prata-api/pkg/id"
 )
 
 type UserService interface {

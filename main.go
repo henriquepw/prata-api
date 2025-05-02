@@ -3,9 +3,9 @@ package main
 import (
 	"log/slog"
 
-	"github.com/henriquepw/pobrin-api/internal/api"
-	"github.com/henriquepw/pobrin-api/internal/database"
-	"github.com/henriquepw/pobrin-api/internal/job"
+	"github.com/henriquepw/prata-api/internal/api"
+	"github.com/henriquepw/prata-api/internal/database"
+	"github.com/henriquepw/prata-api/internal/job"
 	_ "github.com/joho/godotenv/autoload"
 )
 

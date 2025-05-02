@@ -5,7 +5,7 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/henriquepw/pobrin-api/pkg/errorx"
+	"github.com/henriquepw/prata-api/pkg/errorx"
 )
 
 func writeJSON(w http.ResponseWriter, statusCode int, data any) {

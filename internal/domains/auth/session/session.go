@@ -3,9 +3,9 @@ package session
 import (
 	"time"
 
-	"github.com/henriquepw/pobrin-api/pkg/errorx"
-	"github.com/henriquepw/pobrin-api/pkg/id"
-	"github.com/henriquepw/pobrin-api/pkg/jwt"
+	"github.com/henriquepw/prata-api/pkg/errorx"
+	"github.com/henriquepw/prata-api/pkg/id"
+	"github.com/henriquepw/prata-api/pkg/jwt"
 )
 
 type Session struct {
@@ -25,15 +25,15 @@ type Access struct {
 }
 
 func (s *Session) GetAccess() (*Access, error) {
-	accessToken, accessClaims, err := jwt.Generate(s.UserID.String(), time.Minute*15)
+	token, claims, err := jwt.Generate(s.UserID.String(), time.Minute*15)
 	if err != nil {
 		return nil, errorx.Internal()
 	}
 
 	access := Access{
 		SessionID:             s.ID,
-		AccessToken:           accessToken,
-		AccessTokenExpiresAt:  accessClaims.ExpiresAt.Time,
+		AccessToken:           token,
+		AccessTokenExpiresAt:  claims.ExpiresAt.Time,
 		RefreshToken:          s.RefreshToken,
 		RefreshTokenExpiresAt: s.ExpiresAt,
 	}

@@ -3,12 +3,12 @@ package auth
 import (
 	"context"
 
-	"github.com/henriquepw/pobrin-api/internal/domains/auth/session"
-	"github.com/henriquepw/pobrin-api/internal/domains/auth/user"
-	"github.com/henriquepw/pobrin-api/pkg/errorx"
-	"github.com/henriquepw/pobrin-api/pkg/hash"
-	"github.com/henriquepw/pobrin-api/pkg/jwt"
-	"github.com/henriquepw/pobrin-api/pkg/validate"
+	"github.com/henriquepw/prata-api/internal/domains/auth/session"
+	"github.com/henriquepw/prata-api/internal/domains/auth/user"
+	"github.com/henriquepw/prata-api/pkg/errorx"
+	"github.com/henriquepw/prata-api/pkg/hash"
+	"github.com/henriquepw/prata-api/pkg/jwt"
+	"github.com/henriquepw/prata-api/pkg/validate"
 )
 
 type AuthService interface {

@@ -5,7 +5,7 @@ import (
 	"os"
 	"sync"
 
-	"github.com/henriquepw/pobrin-api/internal/env"
+	"github.com/henriquepw/prata-api/internal/env"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/tursodatabase/go-libsql"
 )

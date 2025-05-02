@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/henriquepw/pobrin-api/pkg/date"
-	"github.com/henriquepw/pobrin-api/pkg/id"
+	"github.com/henriquepw/prata-api/pkg/date"
+	"github.com/henriquepw/prata-api/pkg/id"
 	"github.com/jmoiron/sqlx"
 )
 

@@ -5,17 +5,16 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/clerk/clerk-sdk-go/v2"
-	clerkhttp "github.com/clerk/clerk-sdk-go/v2/http"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
-	"github.com/henriquepw/pobrin-api/internal/domains/balance"
-	"github.com/henriquepw/pobrin-api/internal/domains/recurrence"
-	"github.com/henriquepw/pobrin-api/internal/domains/transaction"
-	"github.com/henriquepw/pobrin-api/internal/env"
-	"github.com/henriquepw/pobrin-api/pkg/errorx"
-	"github.com/henriquepw/pobrin-api/pkg/httpx"
+	"github.com/henriquepw/prata-api/internal/domains/auth"
+	"github.com/henriquepw/prata-api/internal/domains/balance"
+	"github.com/henriquepw/prata-api/internal/domains/recurrence"
+	"github.com/henriquepw/prata-api/internal/domains/transaction"
+	"github.com/henriquepw/prata-api/internal/env"
+	"github.com/henriquepw/prata-api/pkg/errorx"
+	"github.com/henriquepw/prata-api/pkg/httpx"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -29,8 +28,6 @@ func New(db *sqlx.DB) *apiServer {
 }
 
 func (s *apiServer) Start() error {
-	clerk.SetKey(os.Getenv(env.ClerkApiKey))
-
 	r := chi.NewRouter()
 	r.Use(
 		middleware.Logger,
@@ -55,8 +52,10 @@ func (s *apiServer) Start() error {
 		httpx.ErrorResponse(w, errorx.MethodNotAllowed())
 	})
 
+	r.Route("/auth", auth.NewRouter(s.db))
+
 	r.Route("/user", func(r chi.Router) {
-		r.Use(clerkhttp.WithHeaderAuthorization())
+		r.Use(auth.RequireAuthorization)
 
 		r.Route("/balance", balance.NewRouter(s.db))
 		r.Route("/transactions", transaction.NewRouter(s.db))

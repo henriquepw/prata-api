@@ -3,8 +3,8 @@ package recurrence
 import (
 	"net/http"
 
-	"github.com/henriquepw/pobrin-api/pkg/httpx"
-	"github.com/henriquepw/pobrin-api/pkg/id"
+	"github.com/henriquepw/prata-api/pkg/httpx"
+	"github.com/henriquepw/prata-api/pkg/id"
 )
 
 type recurrenceHandler struct {

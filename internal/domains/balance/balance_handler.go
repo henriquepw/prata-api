@@ -3,21 +3,20 @@ package balance
 import (
 	"net/http"
 
-	"github.com/henriquepw/pobrin-api/internal/auth"
-	"github.com/henriquepw/pobrin-api/pkg/httpx"
+	"github.com/henriquepw/prata-api/internal/domains/auth"
+	"github.com/henriquepw/prata-api/pkg/httpx"
 )
 
 type balanceHandler struct {
-	svc     BalanceService
-	session auth.Session
+	svc BalanceService
 }
 
-func NewHandler(svc BalanceService, session auth.Session) *balanceHandler {
-	return &balanceHandler{svc, session}
+func NewHandler(svc BalanceService) *balanceHandler {
+	return &balanceHandler{svc}
 }
 
 func (h *balanceHandler) PostUserBalance(w http.ResponseWriter, r *http.Request) {
-	userID, err := h.session.GetUserID(r.Context())
+	userID, err := auth.GetUserID(r)
 	if err != nil {
 		httpx.ErrorResponse(w, err)
 		return
@@ -40,7 +39,7 @@ func (h *balanceHandler) PostUserBalance(w http.ResponseWriter, r *http.Request)
 }
 
 func (h *balanceHandler) GetUserBalance(w http.ResponseWriter, r *http.Request) {
-	userID, err := h.session.GetUserID(r.Context())
+	userID, err := auth.GetUserID(r)
 	if err != nil {
 		httpx.ErrorResponse(w, err)
 		return

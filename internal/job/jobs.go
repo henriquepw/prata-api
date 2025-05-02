@@ -6,8 +6,8 @@ import (
 
 	"github.com/go-co-op/gocron/v2"
 	"github.com/google/uuid"
-	"github.com/henriquepw/pobrin-api/internal/domains/recurrence"
-	"github.com/henriquepw/pobrin-api/internal/domains/transaction"
+	"github.com/henriquepw/prata-api/internal/domains/recurrence"
+	"github.com/henriquepw/prata-api/internal/domains/transaction"
 	"github.com/jmoiron/sqlx"
 )
 

@@ -4,10 +4,10 @@ import (
 	"context"
 	"time"
 
-	"github.com/henriquepw/pobrin-api/pkg/errorx"
-	"github.com/henriquepw/pobrin-api/pkg/id"
-	"github.com/henriquepw/pobrin-api/pkg/page"
-	"github.com/henriquepw/pobrin-api/pkg/validate"
+	"github.com/henriquepw/prata-api/pkg/errorx"
+	"github.com/henriquepw/prata-api/pkg/id"
+	"github.com/henriquepw/prata-api/pkg/page"
+	"github.com/henriquepw/prata-api/pkg/validate"
 )
 
 type RecurrenceService interface {

@@ -3,7 +3,7 @@ package session
 import (
 	"context"
 
-	"github.com/henriquepw/pobrin-api/pkg/id"
+	"github.com/henriquepw/prata-api/pkg/id"
 	"github.com/jmoiron/sqlx"
 )
 

@@ -4,7 +4,7 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 
-	"github.com/henriquepw/pobrin-api/pkg/errorx"
+	"github.com/henriquepw/prata-api/pkg/errorx"
 	"github.com/oklog/ulid/v2"
 )
 

@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/henriquepw/pobrin-api/internal/env"
-	"github.com/henriquepw/pobrin-api/pkg/id"
+	"github.com/henriquepw/prata-api/internal/env"
+	"github.com/henriquepw/prata-api/pkg/id"
 )
 
 type Claims struct {

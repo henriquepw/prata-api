@@ -5,9 +5,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/henriquepw/pobrin-api/pkg/date"
-	"github.com/henriquepw/pobrin-api/pkg/id"
-	"github.com/henriquepw/pobrin-api/pkg/page"
+	"github.com/henriquepw/prata-api/pkg/date"
+	"github.com/henriquepw/prata-api/pkg/id"
+	"github.com/henriquepw/prata-api/pkg/page"
 	"github.com/jmoiron/sqlx"
 )
 

@@ -1,9 +1,8 @@
-module github.com/henriquepw/pobrin-api
+module github.com/henriquepw/prata-api
 
 go 1.24.2
 
 require (
-	github.com/clerk/clerk-sdk-go/v2 v2.3.0
 	github.com/glebarez/go-sqlite v1.22.0
 	github.com/go-chi/chi/v5 v5.1.0
 	github.com/go-chi/cors v1.2.1
@@ -22,7 +21,6 @@ require (
 	github.com/antlr4-go/antlr/v4 v4.13.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
-	github.com/go-jose/go-jose/v3 v3.0.3 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/jonboulle/clockwork v0.4.0 // indirect

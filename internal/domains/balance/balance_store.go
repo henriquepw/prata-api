@@ -3,12 +3,13 @@ package balance
 import (
 	"context"
 
+	"github.com/henriquepw/prata-api/pkg/id"
 	"github.com/jmoiron/sqlx"
 )
 
 type BalanceStore interface {
 	Upsert(ctx context.Context, i Balance) error
-	Get(ctx context.Context, userID string) (Balance, error)
+	Get(ctx context.Context, userID id.ID) (Balance, error)
 }
 
 type balanceStore struct {
@@ -30,7 +31,7 @@ func (s *balanceStore) Upsert(ctx context.Context, balance Balance) error {
 	return err
 }
 
-func (s *balanceStore) Get(ctx context.Context, userID string) (Balance, error) {
+func (s *balanceStore) Get(ctx context.Context, userID id.ID) (Balance, error) {
 	query := `SELECT * FROM balances WHERE user_id = ?`
 
 	balance := Balance{Pieces: []Piece{}}

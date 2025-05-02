@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/henriquepw/pobrin-api/pkg/errorx"
+	"github.com/henriquepw/prata-api/pkg/errorx"
 )
 
 var validate *validator.Validate

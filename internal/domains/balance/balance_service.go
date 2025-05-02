@@ -4,14 +4,14 @@ import (
 	"context"
 	"time"
 
-	"github.com/henriquepw/pobrin-api/pkg/errorx"
-	"github.com/henriquepw/pobrin-api/pkg/id"
-	"github.com/henriquepw/pobrin-api/pkg/validate"
+	"github.com/henriquepw/prata-api/pkg/errorx"
+	"github.com/henriquepw/prata-api/pkg/id"
+	"github.com/henriquepw/prata-api/pkg/validate"
 )
 
 type BalanceService interface {
 	UpsertBalance(ctx context.Context, dto BalanceUpdate) (*Balance, error)
-	GetBalance(ctx context.Context, userID string) (*Balance, error)
+	GetBalance(ctx context.Context, userID id.ID) (*Balance, error)
 }
 
 type balanceService struct {
@@ -59,7 +59,7 @@ func (s *balanceService) UpsertBalance(ctx context.Context, dto BalanceUpdate) (
 	return balance, err
 }
 
-func (s *balanceService) GetBalance(ctx context.Context, userID string) (*Balance, error) {
+func (s *balanceService) GetBalance(ctx context.Context, userID id.ID) (*Balance, error) {
 	balance, err := s.store.Get(ctx, userID)
 	if err != nil {
 		return nil, errorx.NotFound("balance not found")

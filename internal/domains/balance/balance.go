@@ -3,8 +3,8 @@ package balance
 import (
 	"time"
 
-	"github.com/henriquepw/pobrin-api/pkg/errorx"
-	"github.com/henriquepw/pobrin-api/pkg/id"
+	"github.com/henriquepw/prata-api/pkg/errorx"
+	"github.com/henriquepw/prata-api/pkg/id"
 )
 
 type PieceUpdate struct {
@@ -14,13 +14,13 @@ type PieceUpdate struct {
 }
 
 type BalanceUpdate struct {
-	UserID string        `json:"userId" validate:"required"`
+	UserID id.ID         `json:"userId" validate:"required"`
 	Pieces []PieceUpdate `json:"pieces" validate:"required"`
 }
 
 type Piece struct {
 	ID        id.ID      `json:"id" db:"id"`
-	UserID    string     `json:"userId" db:"user_id"`
+	UserID    id.ID      `json:"userId" db:"user_id"`
 	Label     string     `json:"label" db:"label"`
 	Percent   int        `json:"percent" db:"percent"`
 	CreatedAt time.Time  `json:"createdAt" db:"created_at"`

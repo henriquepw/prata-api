@@ -3,7 +3,7 @@ package transaction
 import (
 	"time"
 
-	"github.com/henriquepw/pobrin-api/pkg/id"
+	"github.com/henriquepw/prata-api/pkg/id"
 )
 
 const (

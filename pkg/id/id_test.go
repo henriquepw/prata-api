@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/henriquepw/pobrin-api/pkg/id"
-	"github.com/henriquepw/pobrin-api/pkg/testutil/assert"
+	"github.com/henriquepw/prata-api/pkg/id"
+	"github.com/henriquepw/prata-api/pkg/testutil/assert"
 )
 
 func TestIDMarshaling(t *testing.T) {

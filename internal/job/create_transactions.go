@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/henriquepw/pobrin-api/internal/domains/transaction"
+	"github.com/henriquepw/prata-api/internal/domains/transaction"
 )
 
 func (s *jobServer) createTransactionByRecurrence() error {

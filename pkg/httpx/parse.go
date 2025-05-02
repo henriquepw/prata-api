@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/henriquepw/pobrin-api/pkg/errorx"
+	"github.com/henriquepw/prata-api/pkg/errorx"
 )
 
 func GetQueryString(q url.Values, name string, defaultVal string) string {
