@@ -3,6 +3,7 @@ package session
 import (
 	"context"
 
+	"github.com/charmbracelet/log"
 	"github.com/henriquepw/prata-api/pkg/id"
 	"github.com/jmoiron/sqlx"
 )
@@ -23,8 +24,8 @@ func NewStore(db *sqlx.DB) SessionStore {
 
 func (s *sessioStore) Insert(ctx context.Context, i Session) error {
 	query := `
-    INSERT INTO sessions (id, user_id, refresh_token)
-		VALUES (:id, :user_id, :refresh_token)
+    INSERT INTO sessions (id, user_id, refresh_token, expires_at)
+		VALUES (:id, :user_id, :refresh_token, :expires_at)
 	`
 	_, err := s.db.NamedExecContext(ctx, query, i)
 
@@ -42,8 +43,9 @@ func (s *sessioStore) Get(ctx context.Context, id id.ID) (*Session, error) {
 	query := "SELECT * FROM sessions WHERE id = ?"
 
 	var item Session
-	err := s.db.GetContext(ctx, &item, query, id)
+	err := s.db.GetContext(ctx, &item, query, id.String())
 	if err != nil {
+		log.Error(err)
 		return nil, err
 	}
 

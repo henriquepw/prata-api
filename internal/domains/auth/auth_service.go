@@ -3,10 +3,12 @@ package auth
 import (
 	"context"
 
+	"github.com/charmbracelet/log"
 	"github.com/henriquepw/prata-api/internal/domains/auth/session"
 	"github.com/henriquepw/prata-api/internal/domains/auth/user"
 	"github.com/henriquepw/prata-api/pkg/errorx"
 	"github.com/henriquepw/prata-api/pkg/hash"
+	"github.com/henriquepw/prata-api/pkg/id"
 	"github.com/henriquepw/prata-api/pkg/jwt"
 	"github.com/henriquepw/prata-api/pkg/validate"
 )
@@ -18,8 +20,8 @@ type AuthService interface {
 }
 
 type authService struct {
-	userSVC    user.UserService
-	sessionSVC session.SessionService
+	user    user.UserService
+	session session.SessionService
 }
 
 func NewService(userSVC user.UserService, sessionSVC session.SessionService) AuthService {
@@ -32,19 +34,22 @@ func (s *authService) SignUp(ctx context.Context, dto SignUpData) (*session.Acce
 	}
 
 	// create user
-	user, err := s.userSVC.CreateUser(ctx, dto.Email, dto.Password)
+	user, err := s.user.CreateUser(ctx, dto.Email, dto.Password)
 	if err != nil {
+		log.Error("create user", err)
 		return nil, err
 	}
 
 	// create session
-	session, err := s.sessionSVC.CreateSession(ctx, user.ID)
+	session, err := s.session.CreateSession(ctx, user.ID)
 	if err != nil {
+		log.Error("create Session", err)
 		return nil, err
 	}
 
 	access, err := session.GetAccess()
 	if err != nil {
+		log.Error("GET ACCESS", err)
 		return nil, errorx.Internal()
 	}
 
@@ -57,7 +62,7 @@ func (s *authService) SignIn(ctx context.Context, dto SignInData) (*session.Acce
 	}
 
 	// get user and validate password
-	user, err := s.userSVC.GetByEmail(ctx, dto.Email)
+	user, err := s.user.GetByEmail(ctx, dto.Email)
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +72,7 @@ func (s *authService) SignIn(ctx context.Context, dto SignInData) (*session.Acce
 	}
 
 	// create session
-	session, err := s.sessionSVC.CreateSession(ctx, user.ID)
+	session, err := s.session.CreateSession(ctx, user.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -83,20 +88,25 @@ func (s *authService) SignIn(ctx context.Context, dto SignInData) (*session.Acce
 func (s *authService) RefreshAccess(ctx context.Context, refreshToken string) (*RenewAccess, error) {
 	claims, err := jwt.Validade(refreshToken)
 	if err != nil {
+		log.Error(err)
 		return nil, errorx.Unauthorized()
 	}
 
-	session, err := s.sessionSVC.GetByID(ctx, claims.ID)
+	log.Printf("%+v", claims)
+	session, err := s.session.GetByID(ctx, claims.SessionID)
 	if err != nil {
+		log.Error(err)
 		return nil, errorx.Unauthorized()
 	}
 
-	if session.UserID != claims.ID {
+	if session.UserID != id.ID(claims.Subject) {
+		log.Error("session user is diferent that claims subject")
 		return nil, errorx.Unauthorized()
 	}
 
 	access, err := session.GetAccess()
 	if err != nil {
+		log.Error(err)
 		return nil, errorx.Internal()
 	}
 

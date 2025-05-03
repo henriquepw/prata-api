@@ -47,5 +47,5 @@ func GetUserID(r *http.Request) (id.ID, error) {
 		return id.ID(""), errorx.Unauthorized()
 	}
 
-	return auth.ID, nil
+	return id.ID(auth.Subject), nil
 }

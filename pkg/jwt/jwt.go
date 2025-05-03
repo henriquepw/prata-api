@@ -11,7 +11,7 @@ import (
 )
 
 type Claims struct {
-	ID id.ID
+	SessionID id.ID
 	jwt.RegisteredClaims
 }
 
@@ -19,7 +19,7 @@ func Generate(subject string, duration time.Duration) (string, *Claims, error) {
 	now := time.Now()
 	id := id.New()
 	claims := Claims{
-		ID: id,
+		SessionID: id,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ID:        id.String(),
 			Subject:   subject,

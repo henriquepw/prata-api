@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 
+	"github.com/charmbracelet/log"
 	"github.com/henriquepw/prata-api/pkg/errorx"
 	"github.com/henriquepw/prata-api/pkg/hash"
 	"github.com/henriquepw/prata-api/pkg/id"
@@ -25,6 +26,7 @@ func (s *userService) CreateUser(ctx context.Context, email, password string) (*
 	// check if user email already as registrated
 	exists, err := s.store.Has(ctx, email)
 	if err != nil {
+		log.Error(err)
 		return nil, errorx.Internal()
 	}
 	if exists {

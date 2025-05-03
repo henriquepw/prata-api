@@ -20,10 +20,6 @@ func NewRouter(db *sqlx.DB) func(r chi.Router) {
 	return func(r chi.Router) {
 		r.Post("/sign-in", handler.PostSignIn)
 		r.Post("/sign-up", handler.PostSignUp)
-
-		r.Group(func(r chi.Router) {
-			r.Use(RequireAuthorization)
-			r.Post("/rewew/:token", handler.PostRenew)
-		})
+		r.Get("/renew/{token}", handler.PostRenew)
 	}
 }

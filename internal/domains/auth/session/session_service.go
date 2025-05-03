@@ -29,7 +29,7 @@ func (s *sessionService) CreateSession(ctx context.Context, userID id.ID) (*Sess
 	}
 
 	session := Session{
-		ID:           claims.ID,
+		ID:           claims.SessionID,
 		UserID:       userID,
 		RefreshToken: token,
 		ExpiresAt:    claims.ExpiresAt.Time,
@@ -46,7 +46,7 @@ func (s *sessionService) CreateSession(ctx context.Context, userID id.ID) (*Sess
 func (s *sessionService) GetByID(ctx context.Context, sessionID id.ID) (*Session, error) {
 	session, err := s.store.Get(ctx, sessionID)
 	if err != nil {
-		return nil, errorx.NotFound("user not found")
+		return nil, errorx.NotFound("session not found")
 	}
 
 	return session, err

@@ -47,7 +47,7 @@ func (h *authHandler) PostSignIn(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *authHandler) PostRenew(w http.ResponseWriter, r *http.Request) {
-	token := r.URL.Query().Get("token")
+	token := r.PathValue("token")
 
 	data, err := h.svc.RefreshAccess(r.Context(), token)
 	if err != nil {

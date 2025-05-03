@@ -26,8 +26,8 @@ func NewStore(db *sqlx.DB) UserStore {
 
 func (s *userStore) Has(ctx context.Context, email string) (bool, error) {
 	var exists bool
-	query := `SELECT EXISTS (SELECT 1 FROM users WHERE email = ?);`
-	err := s.db.Get(ctx, query, email)
+	query := `SELECT EXISTS (SELECT 1 FROM users WHERE email = ?)`
+	err := s.db.GetContext(ctx, &exists, query, email)
 
 	return exists, err
 }
