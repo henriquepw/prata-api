@@ -18,6 +18,7 @@ type Session struct {
 }
 
 type Access struct {
+	UserID                id.ID     `json:"userId"`
 	SessionID             id.ID     `json:"sessionId"`
 	AccessToken           string    `json:"accessToken"`
 	RefreshToken          string    `json:"refreshToken"`
@@ -32,6 +33,7 @@ func (s *Session) GetAccess() (*Access, error) {
 	}
 
 	access := Access{
+		UserID:                s.UserID,
 		SessionID:             s.ID,
 		AccessToken:           token,
 		AccessTokenExpiresAt:  claims.ExpiresAt.Time,

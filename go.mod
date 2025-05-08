@@ -3,6 +3,7 @@ module github.com/henriquepw/prata-api
 go 1.24.2
 
 require (
+	github.com/charmbracelet/log v0.4.1
 	github.com/glebarez/go-sqlite v1.22.0
 	github.com/go-chi/chi/v5 v5.1.0
 	github.com/go-chi/cors v1.2.1
@@ -21,7 +22,6 @@ require (
 	github.com/antlr4-go/antlr/v4 v4.13.0 // indirect
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/charmbracelet/lipgloss v1.0.0 // indirect
-	github.com/charmbracelet/log v0.4.1 // indirect
 	github.com/charmbracelet/x/ansi v0.4.2 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
