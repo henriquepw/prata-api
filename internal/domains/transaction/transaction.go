@@ -23,7 +23,7 @@ func (f TransactionType) Validate() bool {
 
 type Transaction struct {
 	ID          id.ID           `json:"id" db:"id"`
-	UserID      string          `json:"userId" db:"user_id"`
+	UserID      id.ID           `json:"userId" db:"user_id"`
 	BalanceID   *id.ID          `json:"balanceId" db:"balance_id"`
 	Type        TransactionType `json:"type" db:"type"`
 	Description string          `json:"description" db:"description"`
@@ -34,7 +34,7 @@ type Transaction struct {
 }
 
 type TransactionCreate struct {
-	UserID      string          `json:"userId" validate:"required"`
+	UserID      id.ID           `json:"userId" validate:"required"`
 	BalanceID   *id.ID          `json:"balanceId"`
 	Type        TransactionType `json:"type" validate:"required,custom"`
 	Description string          `json:"description" validate:"required"`
