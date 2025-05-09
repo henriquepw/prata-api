@@ -92,7 +92,6 @@ func (s *authService) RefreshAccess(ctx context.Context, refreshToken string) (*
 		return nil, errorx.Unauthorized()
 	}
 
-	log.Printf("%+v", claims)
 	session, err := s.session.GetByID(ctx, claims.SessionID)
 	if err != nil {
 		log.Error(err)
@@ -111,7 +110,7 @@ func (s *authService) RefreshAccess(ctx context.Context, refreshToken string) (*
 	}
 
 	return &RenewAccess{
-		AccesToken:           access.AccessToken,
-		AccessTokenExpiresAt: access.AccessTokenExpiresAt,
+		AccesToken: access.AccessToken,
+		ExpiresAt:  access.AccessTokenExpiresAt,
 	}, nil
 }

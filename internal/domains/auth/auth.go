@@ -15,6 +15,6 @@ type SignUpData struct {
 }
 
 type RenewAccess struct {
-	AccesToken           string    `json:"accessToken"`
-	AccessTokenExpiresAt time.Time `json:"accessTokenExpiresAt"`
+	AccesToken string    `json:"accessToken"`
+	ExpiresAt  time.Time `json:"expiresAt"`
 }

@@ -2,9 +2,9 @@ package auth
 
 import (
 	"context"
-	"log"
 	"net/http"
 
+	"github.com/charmbracelet/log"
 	"github.com/henriquepw/prata-api/pkg/errorx"
 	"github.com/henriquepw/prata-api/pkg/httpx"
 	"github.com/henriquepw/prata-api/pkg/id"
@@ -26,10 +26,9 @@ func RequireAuthorization(next http.Handler) http.Handler {
 		}
 
 		token := bearer[7:]
-		log.Println(token)
-
 		claims, err := jwt.Validade(token)
 		if err != nil {
+			log.Error(err.Error())
 			httpx.ErrorResponse(w, errorx.Unauthorized())
 			return
 		}
@@ -42,7 +41,7 @@ func RequireAuthorization(next http.Handler) http.Handler {
 }
 
 func GetUserID(r *http.Request) (id.ID, error) {
-	auth, ok := r.Context().Value(ContextAuth).(jwt.Claims)
+	auth, ok := r.Context().Value(ContextAuth).(*jwt.Claims)
 	if !ok {
 		return id.ID(""), errorx.Unauthorized()
 	}
