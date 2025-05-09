@@ -2,9 +2,9 @@ package httpx
 
 import (
 	"encoding/json"
-	"log/slog"
 	"net/http"
 
+	"github.com/charmbracelet/log"
 	"github.com/henriquepw/prata-api/pkg/errorx"
 )
 
@@ -33,7 +33,7 @@ func SuccessCreatedResponse(w http.ResponseWriter, data ...any) {
 }
 
 func ErrorResponse(w http.ResponseWriter, err error) {
-	slog.Error("HTTP API", "err", err.Error())
+	log.Error("HTTP API", "err", err.Error())
 
 	if e, ok := err.(errorx.ServerError); ok {
 		writeJSON(w, e.StatusCode, e)

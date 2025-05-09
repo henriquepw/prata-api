@@ -30,8 +30,8 @@ func NewStore(db *sqlx.DB) RecurrenceStore {
 
 func (s *recurrenceStore) Insert(ctx context.Context, i Recurrence) error {
 	query := `
-    INSERT INTO recurrences (id, user_id, description, frequence, day, week, month, year_day, start_at, end_at, created_at, updated_at)
-		VALUES (:id, :user_id, :description, :frequence, :day, :week, :month, :year_day, :start_at, :end_at, :created_at, :updated_at)
+    INSERT INTO recurrences (id, user_id, balance_id, amount, description, type, frequence, day, week, month, year_day, start_at, end_at)
+		VALUES (:id, :user_id, :balance_id, :amount, :description, :type, :frequence, :day, :week, :month, :year_day, :start_at, :end_at)
   `
 
 	_, err := s.db.NamedExecContext(ctx, query, i)

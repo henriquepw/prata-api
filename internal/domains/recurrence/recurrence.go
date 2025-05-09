@@ -9,8 +9,8 @@ import (
 
 type Recurrence struct {
 	ID          id.ID                       `json:"id" db:"id"`
+	UserID      id.ID                       `json:"userId" db:"user_id"`
 	BalanceID   *id.ID                      `json:"balanceId" db:"balance_id"`
-	UserID      string                      `json:"userId" db:"user_id"`
 	Amount      int                         `json:"amount" db:"amount"`
 	Description string                      `json:"description" db:"description"`
 	Type        transaction.TransactionType `json:"type" db:"type"`
@@ -26,14 +26,14 @@ type Recurrence struct {
 }
 
 type RecurrenceCreate struct {
-	UserID      string                  `json:"userID" validate:"required"`
-	BalanceID   *id.ID                  `json:"balanceId"`
-	Amount      int                     `json:"int" validate:"required"`
-	Description string                  `json:"description" validate:"required"`
-	Frequence   Frequence               `json:"frequence" validate:"required,custom"`
-	Type        transaction.Transaction `json:"type" validate:"required,custom"`
-	StartAt     time.Time               `json:"startAt" validate:"required"`
-	EndAt       *time.Time              `json:"endAt" validate:"omitempty,required"`
+	UserID      id.ID                       `json:"userID" validate:"required"`
+	BalanceID   *id.ID                      `json:"balanceId"`
+	Amount      int                         `json:"amount" validate:"required"`
+	Description string                      `json:"description" validate:"required"`
+	Frequence   Frequence                   `json:"frequence" validate:"required,custom"`
+	Type        transaction.TransactionType `json:"type" validate:"required,custom"`
+	StartAt     time.Time                   `json:"startAt" validate:"required"`
+	EndAt       *time.Time                  `json:"endAt" validate:"omitempty,required"`
 }
 
 type RecurrenceUpdate struct {
@@ -45,6 +45,7 @@ type RecurrenceUpdate struct {
 }
 
 type RecurrenceQuery struct {
+	UserID     id.ID
 	Cursor     string
 	Limit      int
 	Frequence  string

@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/charmbracelet/log"
 	"github.com/henriquepw/prata-api/pkg/errorx"
 	"github.com/henriquepw/prata-api/pkg/id"
 	"github.com/henriquepw/prata-api/pkg/page"
@@ -37,6 +38,7 @@ func (s *recurrenceService) CreateRecurrence(ctx context.Context, dto Recurrence
 		UserID:      dto.UserID,
 		Amount:      dto.Amount,
 		Description: dto.Description,
+		Type:        dto.Type,
 		Frequence:   dto.Frequence,
 		StartAt:     dto.StartAt,
 		Day:         dto.StartAt.Day(),
@@ -50,6 +52,7 @@ func (s *recurrenceService) CreateRecurrence(ctx context.Context, dto Recurrence
 
 	err := s.store.Insert(ctx, recurrence)
 	if err != nil {
+		log.Error("Failed to create the recurrence", err)
 		return nil, errorx.Internal("Failed to create the recurrence")
 	}
 
