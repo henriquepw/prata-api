@@ -54,9 +54,8 @@ func (s *apiServer) Start() error {
 
 	r.Route("/auth", auth.NewRouter(s.db))
 
-	r.Route("/user", func(r chi.Router) {
+	r.Route("/me", func(r chi.Router) {
 		r.Use(auth.RequireAuthorization)
-
 		r.Route("/balance", balance.NewRouter(s.db))
 		r.Route("/transactions", transaction.NewRouter(s.db))
 		r.Route("/recurrences", recurrence.NewRouter(s.db))

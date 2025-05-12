@@ -1,8 +1,11 @@
 package session
 
 import (
+	"os"
+	"strconv"
 	"time"
 
+	"github.com/henriquepw/prata-api/internal/env"
 	"github.com/henriquepw/prata-api/pkg/errorx"
 	"github.com/henriquepw/prata-api/pkg/id"
 	"github.com/henriquepw/prata-api/pkg/jwt"
@@ -19,7 +22,6 @@ type Session struct {
 
 type Access struct {
 	UserID                id.ID     `json:"userId"`
-	SessionID             id.ID     `json:"sessionId"`
 	AccessToken           string    `json:"accessToken"`
 	RefreshToken          string    `json:"refreshToken"`
 	AccessTokenExpiresAt  time.Time `json:"accessTokenExpiresAt"`
@@ -27,14 +29,18 @@ type Access struct {
 }
 
 func (s *Session) GetAccess() (*Access, error) {
-	token, claims, err := jwt.Generate(s.UserID.String(), time.Minute*15)
+	accessTime, err := strconv.Atoi(os.Getenv(env.ACCESS_TIME))
 	if err != nil {
-		return nil, errorx.Internal()
+		return nil, errorx.Internal("invalid acesss time")
+	}
+
+	token, claims, err := jwt.Generate(s.UserID.String(), time.Minute*time.Duration(accessTime))
+	if err != nil {
+		return nil, errorx.Internal("can't generate the access token")
 	}
 
 	access := Access{
 		UserID:                s.UserID,
-		SessionID:             s.ID,
 		AccessToken:           token,
 		AccessTokenExpiresAt:  claims.ExpiresAt.Time,
 		RefreshToken:          s.RefreshToken,
