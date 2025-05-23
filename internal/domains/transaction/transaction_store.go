@@ -16,7 +16,7 @@ type TransactionStore interface {
 	Delete(ctx context.Context, id id.ID) error
 	Update(ctx context.Context, id id.ID, i TransactionUpdate) error
 	Get(ctx context.Context, id id.ID) (*Transaction, error)
-	List(ctx context.Context, q TransactionQuery) (*page.Cursor[Transaction], error)
+	List(ctx context.Context, q TransactionQuery) (page.Cursor[Transaction], error)
 }
 
 type transactionStore struct {
@@ -82,7 +82,7 @@ func (s *transactionStore) Get(ctx context.Context, id id.ID) (*Transaction, err
 	return &transaction, nil
 }
 
-func (s *transactionStore) List(ctx context.Context, q TransactionQuery) (*page.Cursor[Transaction], error) {
+func (s *transactionStore) List(ctx context.Context, q TransactionQuery) (page.Cursor[Transaction], error) {
 	var queryBuilder strings.Builder
 	queryBuilder.WriteString("SELECT * FROM transactions")
 
@@ -121,7 +121,7 @@ func (s *transactionStore) List(ctx context.Context, q TransactionQuery) (*page.
 	var transactions []Transaction
 	err := s.db.Select(&transactions, queryBuilder.String(), args...)
 	if err != nil {
-		return nil, err
+		return page.NewEmpty[Transaction](), err
 	}
 
 	page := page.New(transactions, q.Limit, func(i Transaction) string {

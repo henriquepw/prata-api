@@ -12,11 +12,11 @@ import (
 )
 
 type RecurrenceService interface {
-	CreateRecurrence(ctx context.Context, dto RecurrenceCreate) (*Recurrence, error)
+	CreateRecurrence(ctx context.Context, dto RecurrenceCreate) (Recurrence, error)
 	UpdateRecurrence(ctx context.Context, id id.ID, dto RecurrenceUpdate) error
 	DeleteRecurrence(ctx context.Context, id id.ID) error
-	GetRecurrence(ctx context.Context, id id.ID) (*Recurrence, error)
-	ListRecurrence(ctx context.Context, dto RecurrenceQuery) *page.Cursor[Recurrence]
+	GetRecurrence(ctx context.Context, id id.ID) (Recurrence, error)
+	ListRecurrence(ctx context.Context, dto RecurrenceQuery) page.Cursor[Recurrence]
 }
 
 type recurrenceService struct {
@@ -27,9 +27,9 @@ func NewService(store RecurrenceStore) RecurrenceService {
 	return &recurrenceService{store}
 }
 
-func (s *recurrenceService) CreateRecurrence(ctx context.Context, dto RecurrenceCreate) (*Recurrence, error) {
+func (s *recurrenceService) CreateRecurrence(ctx context.Context, dto RecurrenceCreate) (Recurrence, error) {
 	if err := validate.Check(dto); err != nil {
-		return nil, err
+		return Recurrence{}, err
 	}
 
 	now := time.Now()
@@ -53,10 +53,10 @@ func (s *recurrenceService) CreateRecurrence(ctx context.Context, dto Recurrence
 	err := s.store.Insert(ctx, recurrence)
 	if err != nil {
 		log.Error("Failed to create the recurrence", err)
-		return nil, errorx.Internal("Failed to create the recurrence")
+		return Recurrence{}, errorx.Internal("Failed to create the recurrence")
 	}
 
-	return &recurrence, nil
+	return recurrence, nil
 }
 
 func (s *recurrenceService) UpdateRecurrence(ctx context.Context, id id.ID, dto RecurrenceUpdate) error {
@@ -81,16 +81,16 @@ func (s *recurrenceService) DeleteRecurrence(ctx context.Context, id id.ID) erro
 	return nil
 }
 
-func (s *recurrenceService) GetRecurrence(ctx context.Context, id id.ID) (*Recurrence, error) {
+func (s *recurrenceService) GetRecurrence(ctx context.Context, id id.ID) (Recurrence, error) {
 	recurrence, err := s.store.Get(ctx, id)
 	if err != nil {
-		return nil, errorx.NotFound("Recurrence not found")
+		return recurrence, errorx.NotFound("Recurrence not found")
 	}
 
 	return recurrence, nil
 }
 
-func (s *recurrenceService) ListRecurrence(ctx context.Context, dto RecurrenceQuery) *page.Cursor[Recurrence] {
+func (s *recurrenceService) ListRecurrence(ctx context.Context, dto RecurrenceQuery) page.Cursor[Recurrence] {
 	if err := validate.Check(dto); err != nil {
 		return page.NewEmpty[Recurrence]()
 	}

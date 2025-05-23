@@ -15,8 +15,8 @@ type RecurrenceStore interface {
 	Insert(ctx context.Context, i Recurrence) error
 	Delete(ctx context.Context, id id.ID) error
 	Update(ctx context.Context, id id.ID, i RecurrenceUpdate) error
-	Get(ctx context.Context, id id.ID) (*Recurrence, error)
-	List(ctx context.Context, q RecurrenceQuery) (*page.Cursor[Recurrence], error)
+	Get(ctx context.Context, id id.ID) (Recurrence, error)
+	List(ctx context.Context, q RecurrenceQuery) (page.Cursor[Recurrence], error)
 	TodayRecurrences(ctx context.Context) []Recurrence
 }
 
@@ -81,19 +81,16 @@ func (s *recurrenceStore) Update(ctx context.Context, id id.ID, i RecurrenceUpda
 	return err
 }
 
-func (s *recurrenceStore) Get(ctx context.Context, id id.ID) (*Recurrence, error) {
+func (s *recurrenceStore) Get(ctx context.Context, id id.ID) (Recurrence, error) {
 	query := `SELECT * FROM recurrences WHERE id = ?`
 
 	var recurrence Recurrence
 	err := s.db.GetContext(ctx, &recurrence, query, id)
-	if err != nil {
-		return nil, err
-	}
 
-	return &recurrence, nil
+	return recurrence, err
 }
 
-func (s *recurrenceStore) List(ctx context.Context, q RecurrenceQuery) (*page.Cursor[Recurrence], error) {
+func (s *recurrenceStore) List(ctx context.Context, q RecurrenceQuery) (page.Cursor[Recurrence], error) {
 	var queryBuilder strings.Builder
 	queryBuilder.WriteString("SELECT * FROM recurrences")
 
@@ -144,7 +141,7 @@ func (s *recurrenceStore) List(ctx context.Context, q RecurrenceQuery) (*page.Cu
 	var recurrences []Recurrence
 	err := s.db.Select(&recurrences, queryBuilder.String(), args...)
 	if err != nil {
-		return nil, err
+		return page.NewEmpty[Recurrence](), err
 	}
 
 	page := page.New(recurrences, q.Limit, func(i Recurrence) string {

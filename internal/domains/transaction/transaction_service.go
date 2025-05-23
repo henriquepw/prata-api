@@ -16,7 +16,7 @@ type TransactionService interface {
 	UpdateTransaction(ctx context.Context, id id.ID, dto TransactionUpdate) error
 	DeleteTransaction(ctx context.Context, id id.ID) error
 	GetTransaction(ctx context.Context, id id.ID) (*Transaction, error)
-	ListTransaction(ctx context.Context, dto TransactionQuery) *page.Cursor[Transaction]
+	ListTransaction(ctx context.Context, dto TransactionQuery) page.Cursor[Transaction]
 }
 
 type transactionService struct {
@@ -94,7 +94,7 @@ func (s *transactionService) GetTransaction(ctx context.Context, id id.ID) (*Tra
 	return transaction, nil
 }
 
-func (s *transactionService) ListTransaction(ctx context.Context, dto TransactionQuery) *page.Cursor[Transaction] {
+func (s *transactionService) ListTransaction(ctx context.Context, dto TransactionQuery) page.Cursor[Transaction] {
 	if err := validate.Check(dto); err != nil {
 		return page.NewEmpty[Transaction]()
 	}
