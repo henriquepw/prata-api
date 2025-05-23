@@ -19,5 +19,6 @@ func GetDB(migrations ...database.Migration) *sqlx.DB {
 		}
 	}
 
+	db.SetMaxOpenConns(1)
 	return db
 }
