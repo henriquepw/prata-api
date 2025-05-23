@@ -10,8 +10,8 @@ import (
 )
 
 type BalanceService interface {
-	UpsertBalance(ctx context.Context, dto BalanceUpdate) (*Balance, error)
-	GetBalance(ctx context.Context, userID id.ID) (*Balance, error)
+	UpsertBalance(ctx context.Context, dto BalanceUpdate) (Balance, error)
+	GetBalance(ctx context.Context, userID id.ID) (Balance, error)
 }
 
 type balanceService struct {
@@ -22,17 +22,12 @@ func NewService(store BalanceStore) BalanceService {
 	return &balanceService{store}
 }
 
-func (s *balanceService) UpsertBalance(ctx context.Context, dto BalanceUpdate) (*Balance, error) {
+func (s *balanceService) UpsertBalance(ctx context.Context, dto BalanceUpdate) (Balance, error) {
+	balance := Balance{}
+
 	if err := validate.Check(dto); err != nil {
-		return nil, err
+		return balance, err
 	}
-
-	balance, err := s.GetBalance(ctx, dto.UserID)
-	if err != nil {
-		return nil, err
-	}
-
-	// TODO: validate existis data
 
 	now := time.Now()
 	for _, p := range dto.Pieces {
@@ -53,18 +48,18 @@ func (s *balanceService) UpsertBalance(ctx context.Context, dto BalanceUpdate) (
 	}
 
 	if err := balance.CheckPercent(); err != nil {
-		return nil, err
+		return balance, err
 	}
 
-	err = s.store.Upsert(ctx, *balance)
+	err := s.store.Upsert(ctx, balance)
 	return balance, err
 }
 
-func (s *balanceService) GetBalance(ctx context.Context, userID id.ID) (*Balance, error) {
+func (s *balanceService) GetBalance(ctx context.Context, userID id.ID) (Balance, error) {
 	balance, err := s.store.Get(ctx, userID)
 	if err != nil {
-		return nil, errorx.NotFound("balance not found")
+		return balance, errorx.NotFound("balance not found")
 	}
 
-	return &balance, nil
+	return balance, nil
 }
