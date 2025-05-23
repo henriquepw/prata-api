@@ -8,9 +8,10 @@ import (
 )
 
 type PieceUpdate struct {
-	ID      id.ID  `json:"id"`
+	ID      id.ID  `json:"id" validate:"omitempty"`
 	Label   string `json:"label" validate:"required,min=3"`
 	Percent int    `json:"percent" validate:"min=0,max=100"`
+	Color   string `json:"color" validate:"required"`
 }
 
 type BalanceUpdate struct {
@@ -22,6 +23,7 @@ type Piece struct {
 	ID        id.ID      `json:"id" db:"id"`
 	UserID    id.ID      `json:"userId" db:"user_id"`
 	Label     string     `json:"label" db:"label"`
+	Color     string     `json:"color" db:"color"`
 	Percent   int        `json:"percent" db:"percent"`
 	CreatedAt time.Time  `json:"createdAt" db:"created_at"`
 	UpdatedAt time.Time  `json:"updatedAt" db:"updated_at"`

@@ -47,8 +47,9 @@ func BalanceMigration(db *sqlx.DB) error {
     CREATE TABLE IF NOT EXISTS balances (
       id TEXT PRIMARY KEY,
       user_id TEXT NOT NULL,
-      label INTEGER NOT NULL,
-      percent DATETIME NOT NULL,
+      label TEXT NOT NULL,
+      color TEXT NOT NULL,
+      percent INTEGER NOT NULL,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 			FOREIGN KEY(user_id) REFERENCES users(id)

@@ -11,7 +11,7 @@ func NewRouter(db *sqlx.DB) func(r chi.Router) {
 	handler := NewHandler(svc)
 
 	return func(r chi.Router) {
-		r.Post("/", handler.PostUserBalance)
 		r.Get("/", handler.GetUserBalance)
+		r.Put("/", handler.PutUserBalance)
 	}
 }

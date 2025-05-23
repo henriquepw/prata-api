@@ -15,7 +15,7 @@ func NewHandler(svc BalanceService) *balanceHandler {
 	return &balanceHandler{svc}
 }
 
-func (h *balanceHandler) PostUserBalance(w http.ResponseWriter, r *http.Request) {
+func (h *balanceHandler) PutUserBalance(w http.ResponseWriter, r *http.Request) {
 	userID, err := auth.GetUserID(r)
 	if err != nil {
 		httpx.ErrorResponse(w, err)

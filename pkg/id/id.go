@@ -31,10 +31,6 @@ func (id *ID) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
-	if !isValid(s) {
-		return ErrInvalidID
-	}
-
 	*id = ID(s)
 	return nil
 }

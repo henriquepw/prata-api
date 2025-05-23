@@ -28,7 +28,7 @@ type Access struct {
 	RefreshTokenExpiresAt time.Time `json:"refreshTokenExpiresAt"`
 }
 
-func (s *Session) GetAccess() (*Access, error) {
+func (s Session) GetAccess() (*Access, error) {
 	accessTime, err := strconv.Atoi(os.Getenv(env.ACCESS_TIME))
 	if err != nil {
 		return nil, errorx.Internal("invalid acesss time")

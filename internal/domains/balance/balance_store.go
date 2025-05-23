@@ -22,9 +22,9 @@ func NewStore(db *sqlx.DB) BalanceStore {
 
 func (s *balanceStore) Upsert(ctx context.Context, balance Balance) error {
 	query := `
-    INSERT INTO balances (id, user_id, label, percent, created_at, updated_at)
-    VALUES (:id, :user_id, :label, :percent, :created_at, :updated_at)
-    ON CONFLICT (id) DO UPDATE SET label=excluded.label, percent=excluded.percent, updated_at=excluded.updated_at
+    INSERT INTO balances (id, user_id, label, color, percent, created_at, updated_at)
+	  VALUES (:id, :user_id, :label, :color, :percent, :created_at, :updated_at)
+    ON CONFLICT (id) DO UPDATE SET label=excluded.label, color=excluded.color, percent=excluded.percent, updated_at=excluded.updated_at
   `
 
 	_, err := s.db.NamedExecContext(ctx, query, balance.Pieces)

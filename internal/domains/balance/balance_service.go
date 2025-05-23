@@ -39,6 +39,7 @@ func (s *balanceService) UpsertBalance(ctx context.Context, dto BalanceUpdate) (
 		piece := Piece{
 			ID:        p.ID,
 			UserID:    dto.UserID,
+			Color:     p.Color,
 			Label:     p.Label,
 			Percent:   p.Percent,
 			CreatedAt: now,
