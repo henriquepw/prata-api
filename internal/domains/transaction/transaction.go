@@ -49,6 +49,7 @@ type TransactionUpdate struct {
 }
 
 type TransactionQuery struct {
+	UserID        id.ID
 	Limit         int
 	Cursor        string
 	Search        string

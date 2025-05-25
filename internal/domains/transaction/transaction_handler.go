@@ -3,6 +3,7 @@ package transaction
 import (
 	"net/http"
 
+	"github.com/henriquepw/prata-api/internal/domains/auth"
 	"github.com/henriquepw/prata-api/pkg/httpx"
 	"github.com/henriquepw/prata-api/pkg/id"
 )
@@ -21,6 +22,14 @@ func (h *transactionHandler) PostTransaction(w http.ResponseWriter, r *http.Requ
 		httpx.ErrorResponse(w, err)
 		return
 	}
+
+	userID, err := auth.GetUserID(r)
+	if err != nil {
+		httpx.ErrorResponse(w, err)
+		return
+	}
+
+	body.UserID = userID
 
 	transaction, err := h.svc.CreateTransaction(r.Context(), body)
 	if err != nil {
@@ -68,9 +77,16 @@ func (h *transactionHandler) GetTransactionByID(w http.ResponseWriter, r *http.R
 }
 
 func (h *transactionHandler) GetTransactionList(w http.ResponseWriter, r *http.Request) {
+	userID, err := auth.GetUserID(r)
+	if err != nil {
+		httpx.ErrorResponse(w, err)
+		return
+	}
+
 	q := r.URL.Query()
 	query := TransactionQuery{
 		Cursor: q.Get("cursor"),
+		UserID: userID,
 		Limit:  httpx.GetQueryInt(q, "limit", 10),
 	}
 
