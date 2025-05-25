@@ -59,7 +59,7 @@ func BalanceMigration(db *sqlx.DB) error {
   `)
 
 	db.MustExec(`
-		CREATE INDEX IF NOT EXISTS id_balances_user_id
+		CREATE INDEX IF NOT EXISTS idx_balances_user_id
 		ON balances (user_id);
 	`)
 
@@ -90,19 +90,19 @@ func RecurrenceMigration(db *sqlx.DB) error {
   `)
 
 	db.MustExec(`
-		CREATE INDEX IF NOT EXISTS id_recurrences_frequence_end_at
+		CREATE INDEX IF NOT EXISTS idx_recurrences_frequence_end_at
 		ON recurrences (frequence, end_at);
 
-		CREATE INDEX IF NOT EXISTS id_recurrences_week
+		CREATE INDEX IF NOT EXISTS idx_recurrences_week
 		ON recurrences (week);
 
-		CREATE INDEX IF NOT EXISTS id_recurrences_year_day
+		CREATE INDEX IF NOT EXISTS idx_recurrences_year_day
 		ON recurrences (year_day);
 
-		CREATE INDEX IF NOT EXISTS id_recurrences_day_month
+		CREATE INDEX IF NOT EXISTS idx_recurrences_day_month
 		ON recurrences (day, month);
 
-		CREATE INDEX IF NOT EXISTS id_recurrences_user_id
+		CREATE INDEX IF NOT EXISTS idx_recurrences_user_id
 		ON recurrences (user_id);
 	`)
 
@@ -127,7 +127,7 @@ func TransactionMigration(db *sqlx.DB) error {
   `)
 
 	db.MustExec(`
-		CREATE INDEX IF NOT EXISTS id_transactions_user_id
+		CREATE INDEX IF NOT EXISTS idx_transactions_user_id
 		ON transactions (user_id);
 	`)
 
