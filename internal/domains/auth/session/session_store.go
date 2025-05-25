@@ -3,7 +3,6 @@ package session
 import (
 	"context"
 
-	"github.com/charmbracelet/log"
 	"github.com/henriquepw/prata-api/pkg/id"
 	"github.com/jmoiron/sqlx"
 )
@@ -11,7 +10,7 @@ import (
 type SessionStore interface {
 	Insert(ctx context.Context, i Session) error
 	Delete(ctx context.Context, id id.ID) error
-	Get(ctx context.Context, id id.ID) (*Session, error)
+	Get(ctx context.Context, id id.ID) (Session, error)
 }
 
 type sessioStore struct {
@@ -39,15 +38,11 @@ func (s *sessioStore) Delete(ctx context.Context, id id.ID) error {
 	return err
 }
 
-func (s *sessioStore) Get(ctx context.Context, id id.ID) (*Session, error) {
+func (s *sessioStore) Get(ctx context.Context, id id.ID) (Session, error) {
 	query := "SELECT * FROM sessions WHERE id = ?"
 
 	var item Session
 	err := s.db.GetContext(ctx, &item, query, id.String())
-	if err != nil {
-		log.Error(err)
-		return nil, err
-	}
 
-	return &item, nil
+	return item, err
 }

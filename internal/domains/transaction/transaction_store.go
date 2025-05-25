@@ -15,7 +15,7 @@ type TransactionStore interface {
 	Insert(ctx context.Context, i Transaction) error
 	Delete(ctx context.Context, id id.ID) error
 	Update(ctx context.Context, id id.ID, i TransactionUpdate) error
-	Get(ctx context.Context, id id.ID) (*Transaction, error)
+	Get(ctx context.Context, id id.ID) (Transaction, error)
 	List(ctx context.Context, q TransactionQuery) (page.Cursor[Transaction], error)
 }
 
@@ -70,16 +70,13 @@ func (s *transactionStore) Update(ctx context.Context, id id.ID, i TransactionUp
 	return err
 }
 
-func (s *transactionStore) Get(ctx context.Context, id id.ID) (*Transaction, error) {
+func (s *transactionStore) Get(ctx context.Context, id id.ID) (Transaction, error) {
 	query := "SELECT * FROM transactions WHERE id = ?"
 
 	var transaction Transaction
 	err := s.db.GetContext(ctx, &transaction, query, id)
-	if err != nil {
-		return nil, err
-	}
 
-	return &transaction, nil
+	return transaction, err
 }
 
 func (s *transactionStore) List(ctx context.Context, q TransactionQuery) (page.Cursor[Transaction], error) {

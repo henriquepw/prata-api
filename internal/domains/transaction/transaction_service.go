@@ -11,11 +11,11 @@ import (
 )
 
 type TransactionService interface {
-	CreateTransaction(ctx context.Context, dto TransactionCreate) (*Transaction, error)
+	CreateTransaction(ctx context.Context, dto TransactionCreate) (Transaction, error)
 	CreateManyTransactions(ctx context.Context, dto []TransactionCreate) ([]Transaction, error)
 	UpdateTransaction(ctx context.Context, id id.ID, dto TransactionUpdate) error
 	DeleteTransaction(ctx context.Context, id id.ID) error
-	GetTransaction(ctx context.Context, id id.ID) (*Transaction, error)
+	GetTransaction(ctx context.Context, id id.ID) (Transaction, error)
 	ListTransaction(ctx context.Context, dto TransactionQuery) page.Cursor[Transaction]
 }
 
@@ -27,9 +27,9 @@ func NewService(store TransactionStore) TransactionService {
 	return &transactionService{store}
 }
 
-func (s *transactionService) CreateTransaction(ctx context.Context, dto TransactionCreate) (*Transaction, error) {
+func (s *transactionService) CreateTransaction(ctx context.Context, dto TransactionCreate) (Transaction, error) {
 	if err := validate.Check(dto); err != nil {
-		return nil, err
+		return Transaction{}, err
 	}
 
 	now := time.Now()
@@ -46,13 +46,13 @@ func (s *transactionService) CreateTransaction(ctx context.Context, dto Transact
 
 	err := s.store.Insert(ctx, transaction)
 	if err != nil {
-		return nil, errorx.Internal("Failed to create the transaction")
+		return Transaction{}, errorx.Internal("Failed to create the transaction")
 	}
 
-	return &transaction, nil
+	return transaction, nil
 }
 
-// TODO:
+// TODO: create custom store fn
 func (s *transactionService) CreateManyTransactions(ctx context.Context, dto []TransactionCreate) ([]Transaction, error) {
 	transactions := []Transaction{}
 
@@ -62,7 +62,7 @@ func (s *transactionService) CreateManyTransactions(ctx context.Context, dto []T
 			continue
 		}
 
-		transactions = append(transactions, *item)
+		transactions = append(transactions, item)
 	}
 
 	return transactions, nil
@@ -85,10 +85,10 @@ func (s *transactionService) DeleteTransaction(ctx context.Context, id id.ID) er
 	return nil
 }
 
-func (s *transactionService) GetTransaction(ctx context.Context, id id.ID) (*Transaction, error) {
+func (s *transactionService) GetTransaction(ctx context.Context, id id.ID) (Transaction, error) {
 	transaction, err := s.store.Get(ctx, id)
 	if err != nil {
-		return nil, errorx.NotFound("Transaction not found")
+		return transaction, errorx.NotFound("Transaction not found")
 	}
 
 	return transaction, nil
