@@ -52,7 +52,7 @@ func (s *apiServer) Start() error {
 		httpx.ErrorResponse(w, errorx.MethodNotAllowed())
 	})
 
-	r.Route("/auth", auth.NewRouter(s.db))
+	r.Group(auth.NewRouter(s.db))
 
 	r.Route("/me", func(r chi.Router) {
 		r.Use(auth.RequireAuthorization)

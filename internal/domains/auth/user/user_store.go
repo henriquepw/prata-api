@@ -12,7 +12,8 @@ import (
 type UserStore interface {
 	Insert(ctx context.Context, i User) error
 	Delete(ctx context.Context, id id.ID) error
-	Get(ctx context.Context, email string) (*User, error)
+	GetByEmail(ctx context.Context, email string) (User, error)
+	GetByID(ctx context.Context, id id.ID) (User, error)
 	Has(ctx context.Context, email string) (bool, error)
 }
 
@@ -34,8 +35,8 @@ func (s *userStore) Has(ctx context.Context, email string) (bool, error) {
 
 func (s *userStore) Insert(ctx context.Context, i User) error {
 	query := `
-    INSERT INTO users (id, email, secret)
-		VALUES (:id, :email, :secret)`
+    INSERT INTO users (id, username, email, avatar, secret)
+		VALUES (:id, :username, :email, :avatar, :secret)`
 	_, err := s.db.NamedExecContext(ctx, query, i)
 
 	return err
@@ -48,14 +49,20 @@ func (s *userStore) Delete(ctx context.Context, id id.ID) error {
 	return err
 }
 
-func (s *userStore) Get(ctx context.Context, email string) (*User, error) {
+func (s *userStore) GetByID(ctx context.Context, id id.ID) (User, error) {
+	query := "SELECT * FROM users WHERE id = ?"
+
+	var user User
+	err := s.db.GetContext(ctx, &user, query, id)
+
+	return user, err
+}
+
+func (s *userStore) GetByEmail(ctx context.Context, email string) (User, error) {
 	query := "SELECT * FROM users WHERE email = ?"
 
 	var user User
 	err := s.db.GetContext(ctx, &user, query, email)
-	if err != nil {
-		return nil, err
-	}
 
-	return &user, nil
+	return user, err
 }

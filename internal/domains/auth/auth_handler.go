@@ -3,15 +3,17 @@ package auth
 import (
 	"net/http"
 
+	"github.com/henriquepw/prata-api/internal/domains/auth/user"
 	"github.com/henriquepw/prata-api/pkg/httpx"
 )
 
 type authHandler struct {
-	svc AuthService
+	svc  AuthService
+	user user.UserService
 }
 
-func NewHandler(svc AuthService) *authHandler {
-	return &authHandler{svc}
+func NewHandler(svc AuthService, user user.UserService) *authHandler {
+	return &authHandler{svc, user}
 }
 
 func (h *authHandler) PostSignUp(w http.ResponseWriter, r *http.Request) {
@@ -50,6 +52,22 @@ func (h *authHandler) PostRenew(w http.ResponseWriter, r *http.Request) {
 	token := r.PathValue("token")
 
 	data, err := h.svc.RefreshAccess(r.Context(), token)
+	if err != nil {
+		httpx.ErrorResponse(w, err)
+		return
+	}
+
+	httpx.SuccessResponse(w, data)
+}
+
+func (h *authHandler) GetUserProfile(w http.ResponseWriter, r *http.Request) {
+	userID, err := GetUserID(r)
+	if err != nil {
+		httpx.ErrorResponse(w, err)
+		return
+	}
+
+	data, err := h.user.GetByID(r.Context(), userID)
 	if err != nil {
 		httpx.ErrorResponse(w, err)
 		return

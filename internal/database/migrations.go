@@ -11,6 +11,8 @@ func UserMigration(db *sqlx.DB) error {
     CREATE TABLE IF NOT EXISTS users (
       id TEXT PRIMARY KEY,
       email TEXT NOT NULL,
+      username TEXT NOT NULL,
+      avatar TEXT,
       secret INTEGER NOT NULL,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,

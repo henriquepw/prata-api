@@ -34,7 +34,12 @@ func (s *authService) SignUp(ctx context.Context, dto SignUpData) (*session.Acce
 	}
 
 	// create user
-	user, err := s.user.CreateUser(ctx, dto.Email, dto.Password)
+	user, err := s.user.CreateUser(ctx, user.UserCreate{
+		Email:    dto.Email,
+		Username: dto.Username,
+		Avatar:   dto.Avatar,
+		Password: dto.Password,
+	})
 	if err != nil {
 		log.Error("create user", err)
 		return nil, err

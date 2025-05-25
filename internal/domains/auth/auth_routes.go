@@ -14,12 +14,19 @@ func NewRouter(db *sqlx.DB) func(r chi.Router) {
 	sessionStore := session.NewStore(db)
 	sessionSVC := session.NewService(sessionStore)
 
-	svc := NewService(userSVC, sessionSVC)
-	handler := NewHandler(svc)
+	authSVC := NewService(userSVC, sessionSVC)
+	handler := NewHandler(authSVC, userSVC)
 
 	return func(r chi.Router) {
-		r.Post("/sign-in", handler.PostSignIn)
-		r.Post("/sign-up", handler.PostSignUp)
-		r.Get("/renew/{token}", handler.PostRenew)
+		r.Route("/auth", func(r chi.Router) {
+			r.Post("/sign-in", handler.PostSignIn)
+			r.Post("/sign-up", handler.PostSignUp)
+			r.Get("/renew/{token}", handler.PostRenew)
+		})
+
+		r.Group(func(r chi.Router) {
+			r.Use(RequireAuthorization)
+			r.Get("/me/profile", handler.GetUserProfile)
+		})
 	}
 }
