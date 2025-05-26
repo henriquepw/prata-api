@@ -34,7 +34,8 @@ func (s Session) GetAccess() (*Access, error) {
 		return nil, errorx.Internal("invalid acesss time")
 	}
 
-	token, claims, err := jwt.Generate(s.UserID.String(), time.Minute*time.Duration(accessTime))
+	tokenDuration := time.Minute * time.Duration(accessTime)
+	token, claims, err := jwt.Generate(s.UserID.String(), tokenDuration)
 	if err != nil {
 		return nil, errorx.Internal("can't generate the access token")
 	}
