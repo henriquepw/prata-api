@@ -1,6 +1,7 @@
 package transaction
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/henriquepw/prata-api/internal/domains/auth"
@@ -43,6 +44,7 @@ func (h *transactionHandler) PostTransaction(w http.ResponseWriter, r *http.Requ
 func (h *transactionHandler) PatchTransactionByID(w http.ResponseWriter, r *http.Request) {
 	id, err := id.Parse(r.PathValue("id"))
 	if err != nil {
+		httpx.ErrorResponse(w, err)
 		return
 	}
 
@@ -62,10 +64,14 @@ func (h *transactionHandler) PatchTransactionByID(w http.ResponseWriter, r *http
 }
 
 func (h *transactionHandler) GetTransactionByID(w http.ResponseWriter, r *http.Request) {
+	log.Print("get id")
 	id, err := id.Parse(r.PathValue("id"))
 	if err != nil {
+		httpx.ErrorResponse(w, err)
 		return
 	}
+
+	log.Print("id", id)
 
 	transaction, err := h.svc.GetTransaction(r.Context(), id)
 	if err != nil {

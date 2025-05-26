@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/charmbracelet/log"
 	"github.com/henriquepw/prata-api/pkg/date"
 	"github.com/henriquepw/prata-api/pkg/id"
 	"github.com/henriquepw/prata-api/pkg/page"
@@ -75,6 +76,9 @@ func (s *transactionStore) Get(ctx context.Context, id id.ID) (Transaction, erro
 
 	var transaction Transaction
 	err := s.db.GetContext(ctx, &transaction, query, id)
+	if err != nil {
+		log.Error("can't get transaction", "store", "transaction", "error", err)
+	}
 
 	return transaction, err
 }

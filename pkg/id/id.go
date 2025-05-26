@@ -8,7 +8,7 @@ import (
 	"github.com/oklog/ulid/v2"
 )
 
-var ErrInvalidID = errorx.ServerError{Message: "invalid format id"}
+var ErrInvalidID = errorx.BadRequest("invalid format id")
 
 type ID string
 
@@ -18,7 +18,7 @@ func isValid[T string | ID](id T) bool {
 }
 
 func Parse(s string) (ID, error) {
-	if isValid(s) {
+	if !isValid(s) {
 		return "", ErrInvalidID
 	}
 

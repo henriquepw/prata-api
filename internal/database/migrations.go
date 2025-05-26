@@ -113,7 +113,7 @@ func TransactionMigration(db *sqlx.DB) error {
 	db.MustExec(`
     CREATE TABLE IF NOT EXISTS transactions (
       id TEXT PRIMARY KEY,
-      user_Id TEXT NOT NULL,
+      user_id TEXT NOT NULL,
       balance_id TEXT,
       type TEXT NOT NULL,
       description TEXT NOT NULL,
