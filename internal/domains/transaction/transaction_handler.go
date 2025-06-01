@@ -18,7 +18,7 @@ func NewHandler(svc TransactionService) *transactionHandler {
 }
 
 func (h *transactionHandler) PostTransaction(w http.ResponseWriter, r *http.Request) {
-	body, err := httpx.GetBodyRequest[TransactionCreate](r)
+	body, err := httpx.GetBodyRequest[[]TransactionCreate](r)
 	if err != nil {
 		httpx.ErrorResponse(w, err)
 		return
@@ -30,15 +30,17 @@ func (h *transactionHandler) PostTransaction(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	body.UserID = userID
+	for i := range body {
+		body[i].UserID = userID
+	}
 
-	transaction, err := h.svc.CreateTransaction(r.Context(), body)
+	trxs, err := h.svc.CreateTransactions(r.Context(), body)
 	if err != nil {
 		httpx.ErrorResponse(w, err)
 		return
 	}
 
-	httpx.SuccessCreatedResponse(w, transaction.ID.String())
+	httpx.SuccessCreatedResponse(w, trxs)
 }
 
 func (h *transactionHandler) PatchTransactionByID(w http.ResponseWriter, r *http.Request) {

@@ -29,7 +29,7 @@ type Created struct {
 }
 
 func SuccessCreatedResponse(w http.ResponseWriter, data ...any) {
-	writeJSON(w, http.StatusCreated, data[0])
+	writeJSON(w, http.StatusCreated, data)
 }
 
 func ErrorResponse(w http.ResponseWriter, err error) {

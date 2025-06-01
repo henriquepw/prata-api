@@ -13,7 +13,7 @@ import (
 )
 
 type TransactionStore interface {
-	Insert(ctx context.Context, i Transaction) error
+	Insert(ctx context.Context, i []Transaction) error
 	Delete(ctx context.Context, id id.ID) error
 	Update(ctx context.Context, id id.ID, i TransactionUpdate) error
 	Get(ctx context.Context, id id.ID) (Transaction, error)
@@ -28,7 +28,7 @@ func NewStore(db *sqlx.DB) TransactionStore {
 	return &transactionStore{db}
 }
 
-func (s *transactionStore) Insert(ctx context.Context, i Transaction) error {
+func (s *transactionStore) Insert(ctx context.Context, i []Transaction) error {
 	query := `
     INSERT INTO transactions (id, user_id, balance_id, type, description, amount, received_at, created_at, updated_at)
     VALUES (:id, :user_id, :balance_id, :type, :description, :amount, :received_at, :created_at, :updated_at)

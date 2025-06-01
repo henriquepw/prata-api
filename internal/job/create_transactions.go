@@ -28,6 +28,6 @@ func (s *jobServer) createTransactionByRecurrence() error {
 		})
 	}
 
-	_, err := s.transactionSVC.CreateManyTransactions(ctx, payload)
+	_, err := s.transactionSVC.CreateTransactions(ctx, payload)
 	return err
 }
