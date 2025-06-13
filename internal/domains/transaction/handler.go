@@ -93,9 +93,13 @@ func (h *transactionHandler) GetTransactionList(w http.ResponseWriter, r *http.R
 
 	q := r.URL.Query()
 	query := TransactionQuery{
-		Cursor: q.Get("cursor"),
-		UserID: userID,
-		Limit:  httpx.GetQueryInt(q, "limit", 10),
+		UserID:        userID,
+		Cursor:        q.Get("cursor"),
+		Search:        q.Get("search"),
+		Type:          TransactionType(q.Get("type")),
+		ReceivedAtGte: httpx.GetQueryTime(q, "receivedAtGte"),
+		ReceivedAtLte: httpx.GetQueryTime(q, "receivedAtLte"),
+		Limit:         httpx.GetQueryInt(q, "limit", 10),
 	}
 
 	transaction := h.svc.ListTransaction(r.Context(), query)

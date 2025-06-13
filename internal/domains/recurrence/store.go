@@ -101,6 +101,10 @@ func (s *recurrenceStore) List(ctx context.Context, q RecurrenceQuery) (page.Cur
 		where = append(where, "id > ?")
 		args = append(args, q.Cursor)
 	}
+	if q.Type != "" {
+		where = append(where, "type = ?")
+		args = append(args, q.Type)
+	}
 	if q.Frequence != "" {
 		where = append(where, "frequence = ?")
 		args = append(args, q.Frequence)

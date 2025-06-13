@@ -95,6 +95,11 @@ func (s *transactionStore) List(ctx context.Context, q TransactionQuery) (page.C
 		args = append(args, q.Cursor)
 	}
 
+	if q.Type != "" {
+		where = append(where, "type = ?")
+		args = append(args, q.Type)
+	}
+
 	if q.Search != "" {
 		where = append(where, "description LIKE %?%")
 		args = append(args, q.Search)

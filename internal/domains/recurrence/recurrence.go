@@ -45,12 +45,12 @@ type RecurrenceUpdate struct {
 }
 
 type RecurrenceQuery struct {
-	UserID     id.ID
 	Cursor     string
 	Limit      int
-	Frequence  string
-	Type       string
+	UserID     id.ID
 	Search     string
+	Frequence  Frequence
+	Type       transaction.TransactionType
 	EndAtGte   time.Time
 	EndAtLte   time.Time
 	StartAtGte time.Time

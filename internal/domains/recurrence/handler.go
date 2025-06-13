@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/henriquepw/prata-api/internal/domains/auth"
+	"github.com/henriquepw/prata-api/internal/domains/transaction"
 	"github.com/henriquepw/prata-api/pkg/httpx"
 	"github.com/henriquepw/prata-api/pkg/id"
 )
@@ -83,9 +84,16 @@ func (h *recurrenceHandler) GetRecurrenceList(w http.ResponseWriter, r *http.Req
 
 	q := r.URL.Query()
 	query := RecurrenceQuery{
-		UserID: userID,
-		Cursor: q.Get("cursor"),
-		Limit:  httpx.GetQueryInt(q, "limit", 10),
+		UserID:     userID,
+		Cursor:     q.Get("cursor"),
+		Search:     q.Get("search"),
+		Frequence:  Frequence(q.Get("frequence")),
+		Type:       transaction.TransactionType(q.Get("type")),
+		StartAtGte: httpx.GetQueryTime(q, "startAtGte"),
+		StartAtLte: httpx.GetQueryTime(q, "startAtLte"),
+		EndAtGte:   httpx.GetQueryTime(q, "endAtGte"),
+		EndAtLte:   httpx.GetQueryTime(q, "endAtLte"),
+		Limit:      httpx.GetQueryInt(q, "limit", 10),
 	}
 
 	recurrence := h.svc.ListRecurrence(r.Context(), query)
