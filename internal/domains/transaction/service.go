@@ -28,8 +28,10 @@ func NewService(store TransactionStore) TransactionService {
 
 func (s *transactionService) CreateTransactions(ctx context.Context, dto []TransactionCreate) ([]Transaction, error) {
 	trxs := []Transaction{}
-	if err := validate.Check(dto); err != nil {
-		return trxs, err
+	for _, d := range dto {
+		if err := validate.Check(d); err != nil {
+			return trxs, err
+		}
 	}
 
 	now := time.Now()

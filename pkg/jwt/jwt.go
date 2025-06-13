@@ -28,7 +28,8 @@ func Generate(subject string, duration time.Duration) (string, *Claims, error) {
 		},
 	}
 
-	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).
+	token, err := jwt.
+		NewWithClaims(jwt.SigningMethodHS256, claims).
 		SignedString([]byte(os.Getenv(env.JWTSecret)))
 
 	return token, &claims, err
