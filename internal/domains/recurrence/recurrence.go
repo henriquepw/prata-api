@@ -37,11 +37,11 @@ type RecurrenceCreate struct {
 }
 
 type RecurrenceUpdate struct {
-	BalanceID   *id.ID     `json:"balanceId" validate:"omitempty"`
-	Amount      int        `json:"amount" validate:"omitempty"`
-	Description string     `json:"description" validate:"omitempty"`
-	Frequence   Frequence  `json:"frequence" validate:"omitempty,custom"`
-	EndAt       *time.Time `json:"endAt" validate:"omitempty"`
+	BalanceID   id.ID     `json:"balanceId" validate:"omitempty"`
+	Amount      int       `json:"amount" validate:"omitempty"`
+	Description string    `json:"description" validate:"omitempty"`
+	Frequence   Frequence `json:"frequence" validate:"omitempty,custom"`
+	EndAt       time.Time `json:"endAt" validate:"omitempty"`
 }
 
 type RecurrenceQuery struct {

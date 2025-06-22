@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/charmbracelet/log"
 	"github.com/henriquepw/prata-api/pkg/date"
 	"github.com/henriquepw/prata-api/pkg/id"
 	"github.com/henriquepw/prata-api/pkg/page"
@@ -64,20 +65,25 @@ func (s *recurrenceStore) Update(ctx context.Context, id id.ID, i RecurrenceUpda
 		args = append(args, i.Frequence)
 	}
 
-	if i.BalanceID == nil || *i.BalanceID != "" {
+	if i.BalanceID != "" {
 		queryBuilder.WriteString(", balance_id = ?")
 		args = append(args, i.BalanceID)
 	}
 
-	if i.EndAt == nil || !i.EndAt.IsZero() {
+	if !i.EndAt.IsZero() {
 		queryBuilder.WriteString(", end_at = ?")
-		args = append(args, date.FormatToISO(*i.EndAt))
+		args = append(args, date.FormatToISO(i.EndAt))
 	}
 
-	queryBuilder.WriteString(" WHERE id ?")
+	queryBuilder.WriteString(" WHERE id = ?")
 	args = append(args, id)
 
-	_, err := s.db.ExecContext(ctx, queryBuilder.String(), args)
+	log.Info("update", "query", queryBuilder.String(), "args", args)
+	_, err := s.db.ExecContext(ctx, queryBuilder.String(), args...)
+	if err != nil {
+		log.Error("Can't update recurrence", "Error:", err.Error())
+	}
+
 	return err
 }
 
