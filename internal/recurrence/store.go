@@ -78,7 +78,6 @@ func (s *recurrenceStore) Update(ctx context.Context, id id.ID, i RecurrenceUpda
 	queryBuilder.WriteString(" WHERE id = ?")
 	args = append(args, id)
 
-	log.Info("update", "query", queryBuilder.String(), "args", args)
 	_, err := s.db.ExecContext(ctx, queryBuilder.String(), args...)
 	if err != nil {
 		log.Error("Can't update recurrence", "Error:", err.Error())

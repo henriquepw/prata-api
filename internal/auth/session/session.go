@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/henriquepw/prata-api/internal/env"
+	"github.com/henriquepw/prata-api/internal/plataform/env"
 	"github.com/henriquepw/prata-api/pkg/errorx"
 	"github.com/henriquepw/prata-api/pkg/id"
 	"github.com/henriquepw/prata-api/pkg/jwt"
@@ -29,7 +29,7 @@ type Access struct {
 }
 
 func (s Session) GetAccess() (*Access, error) {
-	accessTime, err := strconv.Atoi(os.Getenv(env.ACCESS_TIME))
+	accessTime, err := strconv.Atoi(os.Getenv(env.AccessTime))
 	if err != nil {
 		return nil, errorx.Internal("invalid acesss time")
 	}

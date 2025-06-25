@@ -1,21 +1,24 @@
-package api
+package main
 
 import (
 	"fmt"
+	"log/slog"
 	"net/http"
 	"os"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
-	"github.com/henriquepw/prata-api/internal/domains/auth"
-	"github.com/henriquepw/prata-api/internal/domains/balance"
-	"github.com/henriquepw/prata-api/internal/domains/recurrence"
-	"github.com/henriquepw/prata-api/internal/domains/transaction"
-	"github.com/henriquepw/prata-api/internal/env"
+	"github.com/henriquepw/prata-api/internal/auth"
+	"github.com/henriquepw/prata-api/internal/balance"
+	"github.com/henriquepw/prata-api/internal/plataform/database"
+	"github.com/henriquepw/prata-api/internal/plataform/env"
+	"github.com/henriquepw/prata-api/internal/recurrence"
+	"github.com/henriquepw/prata-api/internal/transaction"
 	"github.com/henriquepw/prata-api/pkg/errorx"
 	"github.com/henriquepw/prata-api/pkg/httpx"
 	"github.com/jmoiron/sqlx"
+	_ "github.com/joho/godotenv/autoload"
 )
 
 type apiServer struct {
@@ -63,4 +66,23 @@ func (s *apiServer) Start() error {
 
 	fmt.Println("Server running on port ", s.addr)
 	return http.ListenAndServe(s.addr, r)
+}
+
+func main() {
+	db, err := database.GetDB()
+	if err != nil {
+		slog.Error("failed to initialize database", "error", err)
+		return
+	}
+	defer db.Close()
+
+	if os.Getenv(env.Version) == "DEVELOP" {
+		db.SetMaxOpenConns(1)
+	}
+
+	apiServer := New(db)
+	if err := apiServer.Start(); err != nil {
+		slog.Error("failed to initialize api server", "error", err)
+		return
+	}
 }

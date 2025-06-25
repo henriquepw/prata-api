@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/henriquepw/prata-api/internal/domains/auth"
+	"github.com/henriquepw/prata-api/internal/auth"
 	"github.com/henriquepw/prata-api/pkg/httpx"
 	"github.com/henriquepw/prata-api/pkg/id"
 )

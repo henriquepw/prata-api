@@ -3,7 +3,7 @@ package recurrence
 import (
 	"time"
 
-	"github.com/henriquepw/prata-api/internal/domains/transaction"
+	"github.com/henriquepw/prata-api/internal/transaction"
 	"github.com/henriquepw/prata-api/pkg/id"
 )
 

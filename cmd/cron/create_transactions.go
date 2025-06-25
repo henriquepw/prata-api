@@ -1,10 +1,10 @@
-package job
+package main
 
 import (
 	"context"
 	"time"
 
-	"github.com/henriquepw/prata-api/internal/domains/transaction"
+	"github.com/henriquepw/prata-api/internal/transaction"
 )
 
 func (s *jobServer) createTransactionByRecurrence() error {

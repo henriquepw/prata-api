@@ -2,7 +2,7 @@ package testutil
 
 import (
 	_ "github.com/glebarez/go-sqlite"
-	"github.com/henriquepw/prata-api/internal/database"
+	"github.com/henriquepw/prata-api/internal/plataform/database"
 	"github.com/jmoiron/sqlx"
 )
 

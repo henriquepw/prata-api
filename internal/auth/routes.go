@@ -2,8 +2,8 @@ package auth
 
 import (
 	"github.com/go-chi/chi/v5"
-	"github.com/henriquepw/prata-api/internal/domains/auth/session"
-	"github.com/henriquepw/prata-api/internal/domains/auth/user"
+	"github.com/henriquepw/prata-api/internal/auth/session"
+	"github.com/henriquepw/prata-api/internal/auth/user"
 	"github.com/jmoiron/sqlx"
 )
 

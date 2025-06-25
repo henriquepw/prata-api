@@ -3,7 +3,7 @@ package balance
 import (
 	"net/http"
 
-	"github.com/henriquepw/prata-api/internal/domains/auth"
+	"github.com/henriquepw/prata-api/internal/auth"
 	"github.com/henriquepw/prata-api/pkg/httpx"
 )
 

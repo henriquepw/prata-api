@@ -3,7 +3,7 @@ package auth
 import (
 	"net/http"
 
-	"github.com/henriquepw/prata-api/internal/domains/auth/user"
+	"github.com/henriquepw/prata-api/internal/auth/user"
 	"github.com/henriquepw/prata-api/pkg/httpx"
 )
 
