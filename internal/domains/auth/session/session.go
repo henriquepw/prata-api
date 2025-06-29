@@ -1,3 +1,4 @@
+// Package session implements the user login session
 package session
 
 import (

@@ -1,3 +1,4 @@
+// Package recurrence handle with user finantial recurrence transactions
 package recurrence
 
 import (

@@ -1,3 +1,4 @@
+// Package auth implements the user authorization workflow
 package auth
 
 import (
@@ -14,6 +15,10 @@ type SignUpData struct {
 	Username string `json:"username"  validate:"required"`
 	Email    string `json:"email" validate:"required,email"`
 	Password string `json:"password"  validate:"required,min=6"`
+}
+
+type RewewData struct {
+	RefreshToken string `json:"refreshToken"`
 }
 
 type RenewAccess struct {

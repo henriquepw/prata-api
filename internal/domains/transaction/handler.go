@@ -1,8 +1,8 @@
 package transaction
 
 import (
-	"log"
 	"net/http"
+	"time"
 
 	"github.com/henriquepw/prata-api/internal/domains/auth"
 	"github.com/henriquepw/prata-api/pkg/httpx"
@@ -62,14 +62,11 @@ func (h *transactionHandler) PatchTransactionByID(w http.ResponseWriter, r *http
 }
 
 func (h *transactionHandler) GetTransactionByID(w http.ResponseWriter, r *http.Request) {
-	log.Print("get id")
 	id, err := id.Parse(r.PathValue("id"))
 	if err != nil {
 		httpx.ErrorResponse(w, err)
 		return
 	}
-
-	log.Print("id", id)
 
 	transaction, err := h.svc.GetTransaction(r.Context(), id)
 	if err != nil {
@@ -97,6 +94,26 @@ func (h *transactionHandler) GetTransactionList(w http.ResponseWriter, r *http.R
 	transaction := h.svc.ListTransaction(r.Context(), query)
 
 	httpx.SuccessResponse(w, transaction)
+}
+
+func (h *transactionHandler) GetMonthlyTransactions(w http.ResponseWriter, r *http.Request) {
+	userID := auth.GetUserID(r.Context())
+
+	now := time.Now()
+	year, month, _ := now.Date()
+	startOfMonth := time.Date(year, month, 1, 0, 0, 0, 0, now.Location())
+	endOfMonth := startOfMonth.AddDate(0, 1, 0).Add(-time.Nanosecond)
+
+	query := TransactionQuery{
+		UserID:        userID,
+		ReceivedAtGte: startOfMonth,
+		ReceivedAtLte: endOfMonth,
+		Limit:         0,
+	}
+
+	transaction := h.svc.ListTransaction(r.Context(), query)
+
+	httpx.SuccessResponse(w, transaction.Items)
 }
 
 func (h *transactionHandler) DeleteTransactionByID(w http.ResponseWriter, r *http.Request) {

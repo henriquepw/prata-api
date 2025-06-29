@@ -1,3 +1,4 @@
+// Package user implements user CRUD
 package user
 
 import (

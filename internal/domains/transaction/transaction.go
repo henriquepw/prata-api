@@ -1,3 +1,4 @@
+// Package transaction handle with user finantial transactions
 package transaction
 
 import (

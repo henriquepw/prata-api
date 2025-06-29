@@ -1,3 +1,4 @@
+// Package env include all application env keys
 package env
 
 const (

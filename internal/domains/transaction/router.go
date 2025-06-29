@@ -13,6 +13,7 @@ func NewRouter(db *sqlx.DB) func(r chi.Router) {
 	return func(r chi.Router) {
 		r.Post("/", handler.PostTransaction)
 		r.Get("/", handler.GetTransactionList)
+		r.Get("/month", handler.GetMonthlyTransactions)
 		r.Get("/{id}", handler.GetTransactionByID)
 		r.Patch("/{id}", handler.PatchTransactionByID)
 		r.Delete("/{id}", handler.DeleteTransactionByID)

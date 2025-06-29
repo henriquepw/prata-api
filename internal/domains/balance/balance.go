@@ -1,3 +1,4 @@
+// Package balance handle how the user income is divided, a goal to be achieved at time
 package balance
 
 import (

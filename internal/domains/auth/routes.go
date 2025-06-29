@@ -21,7 +21,7 @@ func NewRouter(db *sqlx.DB) func(r chi.Router) {
 		r.Route("/auth", func(r chi.Router) {
 			r.Post("/sign-in", handler.PostSignIn)
 			r.Post("/sign-up", handler.PostSignUp)
-			r.Get("/renew/{token}", handler.PostRenew)
+			r.Post("/renew", handler.PostRenew)
 		})
 
 		r.Group(func(r chi.Router) {

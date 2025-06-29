@@ -13,3 +13,4 @@ run-app
 
 *.db
 *.db-journal
+foo
