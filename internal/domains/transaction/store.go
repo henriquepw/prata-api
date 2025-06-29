@@ -106,11 +106,11 @@ func (s *transactionStore) List(ctx context.Context, q TransactionQuery) (page.C
 	}
 
 	if !q.ReceivedAtGte.IsZero() {
-		where = append(where, "start_at >= ?")
+		where = append(where, "received_at >= ?")
 		args = append(args, date.FormatToISO(q.ReceivedAtGte))
 	}
 	if !q.ReceivedAtLte.IsZero() {
-		where = append(where, "start_at <= ?")
+		where = append(where, "received_at <= ?")
 		args = append(args, date.FormatToISO(q.ReceivedAtLte))
 	}
 
