@@ -22,13 +22,13 @@ type BalanceUpdate struct {
 
 type Piece struct {
 	ID        id.ID      `json:"id" db:"id"`
-	UserID    id.ID      `json:"userId" db:"user_id"`
+	UserID    id.ID      `json:"-" db:"user_id"`
 	Label     string     `json:"label" db:"label"`
 	Color     string     `json:"color" db:"color"`
 	Percent   int        `json:"percent" db:"percent"`
 	CreatedAt time.Time  `json:"createdAt" db:"created_at"`
 	UpdatedAt time.Time  `json:"updatedAt" db:"updated_at"`
-	DeletedAt *time.Time `json:"deletedAt" db:"deleted_at"`
+	DeletedAt *time.Time `json:"deletedAt,omitempty" db:"deleted_at"`
 }
 
 type Balance struct {

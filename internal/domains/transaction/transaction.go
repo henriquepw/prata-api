@@ -24,8 +24,8 @@ func (f TransactionType) Validate() bool {
 
 type Transaction struct {
 	ID          id.ID           `json:"id" db:"id"`
-	UserID      id.ID           `json:"userId" db:"user_id"`
-	BalanceID   *id.ID          `json:"balanceId" db:"balance_id"`
+	UserID      id.ID           `json:"-" db:"user_id"`
+	BalanceID   *id.ID          `json:"balanceId,omitempty" db:"balance_id"`
 	Type        TransactionType `json:"type" db:"type"`
 	Description string          `json:"description" db:"description"`
 	Amount      int             `json:"amount" db:"amount"`

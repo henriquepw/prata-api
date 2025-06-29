@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/charmbracelet/log"
 	"github.com/henriquepw/prata-api/pkg/errorx"
 	"github.com/henriquepw/prata-api/pkg/id"
 	"github.com/henriquepw/prata-api/pkg/page"
@@ -86,6 +87,8 @@ func (s *transactionService) ListTransaction(ctx context.Context, dto Transactio
 	if err := validate.Check(dto); err != nil {
 		return page.NewEmpty[Transaction]()
 	}
+
+	log.Info("query", "query", dto)
 
 	items, err := s.store.List(ctx, dto)
 	if err != nil {

@@ -10,8 +10,8 @@ import (
 
 type Recurrence struct {
 	ID          id.ID                       `json:"id" db:"id"`
-	UserID      id.ID                       `json:"userId" db:"user_id"`
-	BalanceID   *id.ID                      `json:"balanceId" db:"balance_id"`
+	UserID      id.ID                       `json:"-" db:"user_id"`
+	BalanceID   *id.ID                      `json:"balanceId,omitempty" db:"balance_id"`
 	Amount      int                         `json:"amount" db:"amount"`
 	Description string                      `json:"description" db:"description"`
 	Type        transaction.TransactionType `json:"type" db:"type"`
