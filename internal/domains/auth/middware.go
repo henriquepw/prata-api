@@ -11,10 +11,10 @@ import (
 	"github.com/henriquepw/prata-api/pkg/jwt"
 )
 
-type ContextKey string
+type ctxKey string
 
 const (
-	ContextAuth = ContextKey("auth.clains")
+	ctxAuth = ctxKey("auth.clains")
 )
 
 func RequireAuthorization(next http.Handler) http.Handler {
@@ -33,18 +33,18 @@ func RequireAuthorization(next http.Handler) http.Handler {
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), ContextAuth, claims)
+		ctx := context.WithValue(r.Context(), ctxAuth, claims)
 		request := r.WithContext(ctx)
 
 		next.ServeHTTP(w, request)
 	})
 }
 
-func GetUserID(r *http.Request) (id.ID, error) {
-	auth, ok := r.Context().Value(ContextAuth).(*jwt.Claims)
+func GetUserID(ctx context.Context) id.ID {
+	auth, ok := ctx.Value(ctxAuth).(*jwt.Claims)
 	if !ok {
-		return id.ID(""), errorx.Unauthorized()
+		return id.ID("")
 	}
 
-	return id.ID(auth.Subject), nil
+	return id.ID(auth.Subject)
 }

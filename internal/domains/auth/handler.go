@@ -3,7 +3,7 @@ package auth
 import (
 	"net/http"
 
-	"github.com/henriquepw/prata-api/internal/auth/user"
+	"github.com/henriquepw/prata-api/internal/domains/auth/user"
 	"github.com/henriquepw/prata-api/pkg/httpx"
 )
 
@@ -61,11 +61,7 @@ func (h *authHandler) PostRenew(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *authHandler) GetUserProfile(w http.ResponseWriter, r *http.Request) {
-	userID, err := GetUserID(r)
-	if err != nil {
-		httpx.ErrorResponse(w, err)
-		return
-	}
+	userID := GetUserID(r.Context())
 
 	data, err := h.user.GetByID(r.Context(), userID)
 	if err != nil {

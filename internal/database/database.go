@@ -1,3 +1,4 @@
+// Package database start the db conection and apply migrations
 package database
 
 import (
@@ -5,7 +6,7 @@ import (
 	"os"
 	"sync"
 
-	"github.com/henriquepw/prata-api/internal/plataform/env"
+	"github.com/henriquepw/prata-api/internal/env"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/tursodatabase/go-libsql"
 )

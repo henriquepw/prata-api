@@ -3,7 +3,7 @@ package balance
 import (
 	"net/http"
 
-	"github.com/henriquepw/prata-api/internal/auth"
+	"github.com/henriquepw/prata-api/internal/domains/auth"
 	"github.com/henriquepw/prata-api/pkg/httpx"
 )
 
@@ -16,11 +16,7 @@ func NewHandler(svc BalanceService) *balanceHandler {
 }
 
 func (h *balanceHandler) PutUserBalance(w http.ResponseWriter, r *http.Request) {
-	userID, err := auth.GetUserID(r)
-	if err != nil {
-		httpx.ErrorResponse(w, err)
-		return
-	}
+	userID := auth.GetUserID(r.Context())
 
 	body, err := httpx.GetBodyRequest[BalanceUpdate](r)
 	if err != nil {
@@ -39,11 +35,7 @@ func (h *balanceHandler) PutUserBalance(w http.ResponseWriter, r *http.Request) 
 }
 
 func (h *balanceHandler) GetUserBalance(w http.ResponseWriter, r *http.Request) {
-	userID, err := auth.GetUserID(r)
-	if err != nil {
-		httpx.ErrorResponse(w, err)
-		return
-	}
+	userID := auth.GetUserID(r.Context())
 
 	item, err := h.svc.GetBalance(r.Context(), userID)
 	if err != nil {

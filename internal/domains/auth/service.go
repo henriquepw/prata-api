@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"github.com/charmbracelet/log"
-	"github.com/henriquepw/prata-api/internal/auth/session"
-	"github.com/henriquepw/prata-api/internal/auth/user"
+	"github.com/henriquepw/prata-api/internal/domains/auth/session"
+	"github.com/henriquepw/prata-api/internal/domains/auth/user"
 	"github.com/henriquepw/prata-api/pkg/errorx"
 	"github.com/henriquepw/prata-api/pkg/hash"
 	"github.com/henriquepw/prata-api/pkg/id"

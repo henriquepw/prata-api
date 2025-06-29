@@ -1,17 +1,19 @@
 package main
 
 import (
+	"context"
 	"log/slog"
 	"os"
+	"os/signal"
 	"time"
 
 	"github.com/charmbracelet/log"
 	"github.com/go-co-op/gocron/v2"
 	"github.com/google/uuid"
-	"github.com/henriquepw/prata-api/internal/plataform/database"
-	"github.com/henriquepw/prata-api/internal/plataform/env"
-	"github.com/henriquepw/prata-api/internal/recurrence"
-	"github.com/henriquepw/prata-api/internal/transaction"
+	"github.com/henriquepw/prata-api/internal/database"
+	"github.com/henriquepw/prata-api/internal/domains/recurrence"
+	"github.com/henriquepw/prata-api/internal/domains/transaction"
+	"github.com/henriquepw/prata-api/internal/env"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/joho/godotenv/autoload"
 )
@@ -22,12 +24,13 @@ const (
 )
 
 type jobServer struct {
+	ctx             context.Context
 	scheduler       gocron.Scheduler
 	recurrenceStore recurrence.RecurrenceStore
 	transactionSVC  transaction.TransactionService
 }
 
-func New(db *sqlx.DB) *jobServer {
+func New(ctx context.Context, db *sqlx.DB) (*jobServer, error) {
 	s, err := gocron.NewScheduler(
 		gocron.WithStopTimeout(3*time.Hour),
 		gocron.WithGlobalJobOptions(
@@ -45,7 +48,7 @@ func New(db *sqlx.DB) *jobServer {
 			),
 		))
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	recurrenceStore := recurrence.NewStore(db)
@@ -56,10 +59,10 @@ func New(db *sqlx.DB) *jobServer {
 		scheduler:       s,
 		recurrenceStore: recurrenceStore,
 		transactionSVC:  transactionSVC,
-	}
+	}, nil
 }
 
-func (s *jobServer) addTask(cron, name string, task func() error) {
+func (s *jobServer) addTask(cron, name string, task func() error) error {
 	_, err := s.scheduler.NewJob(
 		gocron.CronJob(cron, false),
 		gocron.NewTask(task),
@@ -67,21 +70,31 @@ func (s *jobServer) addTask(cron, name string, task func() error) {
 	)
 	if err != nil {
 		log.Error("can't setup job", "name", name)
-		panic(err)
 	}
+
+	return err
 }
 
 func (s *jobServer) Start() error {
-	s.addTask(CronEveryday, "create-transactions-by-transactions", s.createTransactionByRecurrence)
+	err := s.addTask(CronEveryday, "create-transactions-by-transactions", s.createTodayTransactions)
+	if err != nil {
+		return err
+	}
 
-	return nil
+	s.scheduler.Start()
+	<-s.ctx.Done()
+
+	return s.scheduler.Shutdown()
 }
 
-func main() {
+func run(ctx context.Context) error {
+	ctx, cancel := signal.NotifyContext(ctx, os.Interrupt)
+	defer cancel()
+
 	db, err := database.GetDB()
 	if err != nil {
 		slog.Error("failed to initialize database", "error", err)
-		return
+		return err
 	}
 	defer db.Close()
 
@@ -89,9 +102,19 @@ func main() {
 		db.SetMaxOpenConns(1)
 	}
 
-	jobServer := New(db)
-	if err := jobServer.Start(); err != nil {
-		slog.Error("failed to start job server", "error", err)
-		return
+	jobServer, err := New(ctx, db)
+	if err != nil {
+		return err
+	}
+
+	return jobServer.Start()
+}
+
+func main() {
+	ctx := context.Background()
+
+	if err := run(ctx); err != nil {
+		slog.Error("Cronjob finished with error", "error", err.Error())
+		os.Exit(1)
 	}
 }

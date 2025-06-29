@@ -33,9 +33,3 @@ mock:
 test:
 	ENV=.env.test go test -v ./...
 
-
-## build: build the app into a binary
-.PHONY: build
-build:
-	go build -o ./main ./main.go
-

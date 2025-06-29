@@ -4,10 +4,10 @@ import (
 	"context"
 	"time"
 
-	"github.com/henriquepw/prata-api/internal/transaction"
+	"github.com/henriquepw/prata-api/internal/domains/transaction"
 )
 
-func (s *jobServer) createTransactionByRecurrence() error {
+func (s *jobServer) createTodayTransactions() error {
 	ctx := context.TODO()
 
 	recurrence := s.recurrenceStore.TodayRecurrences(ctx)

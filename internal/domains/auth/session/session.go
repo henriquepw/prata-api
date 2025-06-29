@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/henriquepw/prata-api/internal/plataform/env"
+	"github.com/henriquepw/prata-api/internal/env"
 	"github.com/henriquepw/prata-api/pkg/errorx"
 	"github.com/henriquepw/prata-api/pkg/id"
 	"github.com/henriquepw/prata-api/pkg/jwt"

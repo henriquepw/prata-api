@@ -3,8 +3,8 @@ package recurrence
 import (
 	"net/http"
 
-	"github.com/henriquepw/prata-api/internal/auth"
-	"github.com/henriquepw/prata-api/internal/transaction"
+	"github.com/henriquepw/prata-api/internal/domains/auth"
+	"github.com/henriquepw/prata-api/internal/domains/transaction"
 	"github.com/henriquepw/prata-api/pkg/httpx"
 	"github.com/henriquepw/prata-api/pkg/id"
 )
@@ -24,11 +24,7 @@ func (h *recurrenceHandler) PostRecurrence(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	body.UserID, err = auth.GetUserID(r)
-	if err != nil {
-		httpx.ErrorResponse(w, err)
-		return
-	}
+	body.UserID = auth.GetUserID(r.Context())
 
 	recurrence, err := h.svc.CreateRecurrence(r.Context(), body)
 	if err != nil {
@@ -76,11 +72,7 @@ func (h *recurrenceHandler) GetRecurrenceByID(w http.ResponseWriter, r *http.Req
 }
 
 func (h *recurrenceHandler) GetRecurrenceList(w http.ResponseWriter, r *http.Request) {
-	userID, err := auth.GetUserID(r)
-	if err != nil {
-		httpx.ErrorResponse(w, err)
-		return
-	}
+	userID := auth.GetUserID(r.Context())
 
 	q := r.URL.Query()
 	query := RecurrenceQuery{

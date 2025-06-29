@@ -1,20 +1,22 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
+	"os/signal"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
-	"github.com/henriquepw/prata-api/internal/auth"
-	"github.com/henriquepw/prata-api/internal/balance"
-	"github.com/henriquepw/prata-api/internal/plataform/database"
-	"github.com/henriquepw/prata-api/internal/plataform/env"
-	"github.com/henriquepw/prata-api/internal/recurrence"
-	"github.com/henriquepw/prata-api/internal/transaction"
+	"github.com/henriquepw/prata-api/internal/database"
+	"github.com/henriquepw/prata-api/internal/domains/auth"
+	"github.com/henriquepw/prata-api/internal/domains/balance"
+	"github.com/henriquepw/prata-api/internal/domains/recurrence"
+	"github.com/henriquepw/prata-api/internal/domains/transaction"
+	"github.com/henriquepw/prata-api/internal/env"
 	"github.com/henriquepw/prata-api/pkg/errorx"
 	"github.com/henriquepw/prata-api/pkg/httpx"
 	"github.com/jmoiron/sqlx"
@@ -22,12 +24,13 @@ import (
 )
 
 type apiServer struct {
-	db   *sqlx.DB
+	ctx  context.Context
 	addr string
+	db   *sqlx.DB
 }
 
-func New(db *sqlx.DB) *apiServer {
-	return &apiServer{db, ":" + os.Getenv(env.Port)}
+func New(ctx context.Context, db *sqlx.DB) *apiServer {
+	return &apiServer{ctx, ":" + os.Getenv(env.Port), db}
 }
 
 func (s *apiServer) Start() error {
@@ -68,11 +71,13 @@ func (s *apiServer) Start() error {
 	return http.ListenAndServe(s.addr, r)
 }
 
-func main() {
+func run(ctx context.Context) error {
+	ctx, cancel := signal.NotifyContext(ctx, os.Interrupt)
+	defer cancel()
+
 	db, err := database.GetDB()
 	if err != nil {
-		slog.Error("failed to initialize database", "error", err)
-		return
+		return err
 	}
 	defer db.Close()
 
@@ -80,9 +85,15 @@ func main() {
 		db.SetMaxOpenConns(1)
 	}
 
-	apiServer := New(db)
-	if err := apiServer.Start(); err != nil {
-		slog.Error("failed to initialize api server", "error", err)
-		return
+	apiServer := New(ctx, db)
+	return apiServer.Start()
+}
+
+func main() {
+	ctx := context.Background()
+
+	if err := run(ctx); err != nil {
+		slog.Error("Cronjob finished with error", "error", err.Error())
+		os.Exit(1)
 	}
 }
