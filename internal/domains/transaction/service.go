@@ -44,6 +44,7 @@ func (s *transactionService) CreateTransactions(ctx context.Context, dto []Trans
 			Type:        item.Type,
 			Amount:      item.Amount,
 			ReceivedAt:  item.ReceivedAt,
+			BalanceID:   item.BalanceID,
 			CreatedAt:   now,
 			UpdatedAt:   now,
 		})
